@@ -1,0 +1,96 @@
+#+options: ^:nil
+
+* Exercise
+
+In this exercise, I am choosing to take a literate programming
+approach.  I will be describing the design and writing blocks of
+executable code using emacs org-mode, which provides the means to both
+document and execute the similator program's executable code.  In the
+end, I'll provide the following:
+
+** publication 
+
+*** pdf
+*** html
+
+** similator program
+
+** test suite
+
+* Describe design
+
+** running
+*** input
+**** script file
+contains the initial cuboid definition
+**** field file
+contains the student's mine sweeping solution steps
+*** simulator program
+serves as the executor of the script and field files
+**** components
+***** domain
+
+represent's the entities within the simulation
+
+input
+cuboid
+vessel (ship)
+point (x,y,z)
+move ((x,y),z)
+distance (x,y,z:[a-z,A-Z])
+firing_pattern (alpha,beta,gama,delta)
+step
+score
+output
+
+***** services
+
+behavior driver's for the simulation
+
+step_executor
+cuboid_computer
+move_executor
+score_computer
+input_validator
+input_parser
+output_computer
+firing_pattern_executor
+hit_computer
+
+*** output
+contains the step executor's results 
+**** output file
+
+
+** composition
+
+**** cuboid
+
+contains a coordinate system of points
+
+point's will be recomputed with each step
+
+**** vessel
+
+occupies a point (has a slot for a point)
+
+**** move
+
+contains 2 point slots
+
+**** distance
+
+is computed by evaluating the number of points (1km distance) between:
+
+vessel and mines
+vessel and edges of cuboid
+* Describe approach
+
+** Document and code along the way
+** Write tests for the rules
+*** use exemplar inputs for regression to verify correct outputs
+** Execute the similator from the org document
+** Produce final output
+** Publish to github
+** Submit work
+** Have a cup of tea and ruminate upon the exercise..
