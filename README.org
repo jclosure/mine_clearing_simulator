@@ -32,16 +32,144 @@ serves as the executor of the script and field files
 
 represent's the entities within the simulation
 
-input
-cuboid
-vessel (ship)
-point (x,y,z)
-move ((x,y),z)
-distance (x,y,z:[a-z,A-Z])
-firing_pattern (alpha,beta,gama,delta)
-step
-score
-output
+****** input
+
+the input is collected from a cuboid file and the student's script
+file.  we put this information into data structures that are
+appropriate for the job.  for this purpose we'll need a lexer and a parser.
+
+#+begin_src python
+
+  cuboid = open("cuboid.dat", "r").read()
+
+  # we consume the studen't script sequence of steps
+  steps = open("student_script.dat", "r").read().split()
+
+#+end_src
+
+
+
+****** cuboid
+
+this is a data structure that represents our 3d coordinate system.
+here we will turn the string into a cubic data structure that will allow us the track the ships position as it steps through moves.
+
+#+begin_src python
+
+   import operator
+   import re
+
+   cuboid = """ .Z.
+                ...
+                Z.Z
+                ...
+                .Z. """
+
+   # stub validation
+
+   # compute height and width
+   width = len(list(cuboid.split()[0].strip()))
+   height = len(cuboid.split())
+
+   # build an mapping char to value
+   z_map = {c:i+1 for i,c in enumerate([chr(c) for c in 
+                                        range(ord('a'), ord('z')+1)] + [chr(c) for c in range(ord('A'), ord('Z')+1)])}
+
+   #compute depth
+
+   # get the order of the values
+   ordered_z = sorted(z_map.items(), key=operator.itemgetter(1))
+
+   # show the ordered_z
+   for c,l in ordered_z:
+              z = z_map[c] - 1
+              print(c, z)
+
+   # find the mines and order them from deepest to most shallow
+   mine_chars = list(set(re.findall(r'[a-zA-Z]',cuboid)))
+
+   deepest_mine = reduce(lambda highest,current: current if z_map[current] > z_map[highest] else highest, mine_chars)
+
+   depth = z_map[deepest_mine]
+
+
+  # generate a cubic data structure of correct dimensions
+  cube_space = [[['.' for z in range(depth)] 
+                 for y in range(height)] 
+                for x in range(width)]
+
+  # compute the mine coordinates in cubic space
+  for y,line in enumerate(cuboid.strip().split()):
+     for x,char in enumerate(list(line.strip())):
+        if char in mine_chars:
+           z = z_map[char]-1
+           cube_space[x][y][z] = char
+           print(x,y,z)
+
+#+end_src
+
+
+
+****** vessel (ship)
+
+         /\
+        |==|
+        |  |
+        |  |
+        |  |
+       /____\
+       |    |
+       |Joel|
+       |  IX|
+       |    |
+      /| |  |\
+     / | |  | \
+    /__|_|__|__\
+       /_\/_\
+       ######
+      ########
+       ######
+        ####
+        ####
+         ##
+         ##   
+         ##
+         ##
+
+
+****** point (x,y,z)
+
+points within the cuboid are represented as tuples
+
+****** move ((x,y,None),z)
+
+movement within the cuboid corresponds to steps and is done with a
+z-axis fall and a potential move on either the x or y axes.
+
+****** distance
+
+distance is tracked between points
+
+this is used to find the center of the cuboid and to determine if
+photon torpedo firing_patterns actually hit the mines
+
+****** firing_pattern (alpha,beta,gama,delta)
+
+firing patterns are just tuples of 2d coordinates.  they are assumed
+to go all the way to the bottom of the z-axis.
+
+#+begin_src python
+
+  alpha = ((-1, -1), (-1, 1), (1, -1), (1, 1))
+  beta = ((-1, 0), (0, -1), (0, 1), (1, 0))
+  gamma = ((-1, 0), (0, 0), (1, 0))
+  delta = ((0, -1), (0, 0), (0, 1))
+
+#+end_src
+
+****** step
+****** score
+****** output
 
 ***** services
 
