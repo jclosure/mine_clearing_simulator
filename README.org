@@ -40,7 +40,9 @@ appropriate for the job.  for this purpose we'll need a lexer and a parser.
 
 first we'll consume the cuboid file
 
-#+begin_src python
+#+name: get_cuboid
+#+header: :exports both
+#+begin_src python 
 
   cuboid = open("./cuboid.dat", "r").read()
  
@@ -58,7 +60,9 @@ first we'll consume the cuboid file
 
 next we'll get the steps that the student submitted to the simulator.
 
-#+begin_src python
+#+name: get_steps
+#+header: :exports both
+#+begin_src python 
 
   steps = open("./student_minesweeping_script.steps", "r").read().split("\n")
 
@@ -76,6 +80,8 @@ next we'll get the steps that the student submitted to the simulator.
 this is a data structure that represents our 3d coordinate system.
 here we will turn the string into a cubic data structure that will allow us the track the ships position as it steps through moves.
 
+#+name: build_cuboid
+#+header: :exports both
 #+begin_src python
 
   cuboid = """ .Z.
