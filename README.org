@@ -74,7 +74,6 @@ next we'll get the steps that the student submitted to the simulator.
 | north | delta south | west | gamma east | east | gamma west | south | delta |
 
 
-
 ****** cuboid
 
 this is a data structure that represents our 3d coordinate system.
@@ -96,7 +95,7 @@ here we will turn the string into a cubic data structure that will allow us the 
   width = len(list(cuboid.split()[0].strip()))
   height = len(cuboid.split("\n"))
 
-  # build an mapping char to value
+  # build a mapping char to value
   z_map = {c:i+1 for i,c in enumerate([chr(c) for c in 
                                        range(ord('a'), ord('z')+1)] + [chr(c) for c in range(ord('A'), ord('Z')+1)])}
 
@@ -137,11 +136,81 @@ here we will turn the string into a cubic data structure that will allow us the 
 
 #+end_src
 
-#+RESULTS:
+#+RESULTS: build_cuboid
 | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Z) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) |
 | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Z) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Z) |
 | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Z) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) |
 
+
+
+****** point (x,y,z)
+
+points within the cuboid are represented as tuples
+
+first we need to be able to find the center point of the x,y plane, in
+order to place the ship at it's location
+
+#+name: locate_ship
+#+header: :var cuboid=build_cuboid :exports both
+#+begin_src python
+
+  def find_center(cuboid):
+      width = len(cuboid)
+      height = len(cuboid[0])
+      center_point = ((width / 2) + (width % 2), (height / 2) + (height % 2))
+      return center_point
+
+  center_point = find_center(cuboid)
+
+  return center_point
+
+#+end_src
+
+#+RESULTS: locate_ship
+| 2 | 3 |
+
+We also need to be able to recomput the size of the x,y plane based
+upon the location of the ship and the mines
+
+#+name: recompute_xy_plane
+#+header: :var cuboid=build_cuboid ship_location=locate_ship :exports both
+#+begin_src python
+
+"todo"
+
+#+end_src
+
+#+RESULTS: recompute_xy_plane
+: None
+
+****** movement (z-1,[x,y,None])
+
+movement within the cuboid corresponds to steps and is done with a
+z-axis fall and a potential move on either the x or y axes.
+
+****** distance
+
+distance is tracked between points
+
+this is used to find the center of the cuboid and to determine if
+photon torpedo firing_patterns actually hit the mines
+
+there is a hit tracking mechanism that computes a hit based on
+distance, postion of points, and the firing pattern
+
+****** firing_pattern (alpha,beta,gama,delta)
+
+firing patterns are just tuples of 2d coordinates.  they are assumed
+to go all the way to the bottom of the z-axis.
+
+#+begin_src python
+
+  firing_patterns = [alpha = ((-1, -1), (-1, 1), (1, -1), (1, 1))
+                     beta = ((-1, 0), (0, -1), (0, 1), (1, 0))
+                     gamma = ((-1, 0), (0, 0), (1, 0))
+                     delta = ((0, -1), (0, 0), (0, 1))]
+
+#+end_src
 
 
 ****** vessel (ship)
@@ -174,33 +243,27 @@ here we will turn the string into a cubic data structure that will allow us the 
 
      #+END_EXAMPLE
 
-****** point (x,y,z)
+the ship will have characteristics and behaviors.
 
-points within the cuboid are represented as tuples
+characteristics:
 
-****** move ((x,y,None),z)
+position (x,y,z)
+firing_patterns
 
-movement within the cuboid corresponds to steps and is done with a
-z-axis fall and a potential move on either the x or y axes.
+behaviors:
 
-****** distance
-
-distance is tracked between points
-
-this is used to find the center of the cuboid and to determine if
-photon torpedo firing_patterns actually hit the mines
-
-****** firing_pattern (alpha,beta,gama,delta)
-
-firing patterns are just tuples of 2d coordinates.  they are assumed
-to go all the way to the bottom of the z-axis.
+fire
+move
+fall
 
 #+begin_src python
 
-  firing_patterns = [alpha = ((-1, -1), (-1, 1), (1, -1), (1, 1))
-                     beta = ((-1, 0), (0, -1), (0, 1), (1, 0))
-                     gamma = ((-1, 0), (0, 0), (1, 0))
-                     delta = ((0, -1), (0, 0), (0, 1))]
+  class Ship:
+
+      firing_patterns = []
+
+      def fire(self, pattern):
+        print "pyoo pyoo pyoo"
 
 #+end_src
 
