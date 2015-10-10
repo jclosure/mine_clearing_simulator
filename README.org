@@ -4,9 +4,9 @@
 
 In this exercise, I am choosing to take a literate programming
 approach.  I will be describing the design and writing blocks of
-executable code using emacs org-mode, which provides the means to both
-document and execute the similator program's executable code.  In the
-end, I'll provide the following:
+executable code using emacs org-mode babel, which provides the means to both
+document and run essential pieces of the similator's code inside this
+README.org document itself.
 
 ** publication 
 
@@ -38,14 +38,36 @@ the input is collected from a cuboid file and the student's script
 file.  we put this information into data structures that are
 appropriate for the job.  for this purpose we'll need a lexer and a parser.
 
+first we'll consume the cuboid file
+
 #+begin_src python
 
-  cuboid = open("cuboid.dat", "r").read()
-
-  # we consume the studen't script sequence of steps
-  steps = open("student_script.dat", "r").read().split()
+  cuboid = open("./cuboid.dat", "r").read()
+ 
+  return cuboid
 
 #+end_src
+
+#+RESULTS:
+: ..Z..
+: .....
+: Z...Z
+: .....
+: ..Z..
+
+
+next we'll get the steps that the student submitted to the simulator.
+
+#+begin_src python
+
+  steps = open("./student_minesweeping_script.steps", "r").read().split("\n")
+
+  return steps
+
+#+end_src
+
+#+RESULTS:
+| north | delta south | west | gamma east | east | gamma west | south | delta |
 
 
 
@@ -56,41 +78,40 @@ here we will turn the string into a cubic data structure that will allow us the 
 
 #+begin_src python
 
-   import operator
-   import re
+  cuboid = """ .Z.
+               ...
+               Z.Z
+               ...
+               .Z. """
 
-   cuboid = """ .Z.
-                ...
-                Z.Z
-                ...
-                .Z. """
+  # stub validation
 
-   # stub validation
+  # compute height and width
+  width = len(list(cuboid.split()[0].strip()))
+  height = len(cuboid.split("\n"))
 
-   # compute height and width
-   width = len(list(cuboid.split()[0].strip()))
-   height = len(cuboid.split())
+  # build an mapping char to value
+  z_map = {c:i+1 for i,c in enumerate([chr(c) for c in 
+                                       range(ord('a'), ord('z')+1)] + [chr(c) for c in range(ord('A'), ord('Z')+1)])}
 
-   # build an mapping char to value
-   z_map = {c:i+1 for i,c in enumerate([chr(c) for c in 
-                                        range(ord('a'), ord('z')+1)] + [chr(c) for c in range(ord('A'), ord('Z')+1)])}
+  #compute depth
+  import operator
+  import re
 
-   #compute depth
+  # get the order of the values
+  ordered_z = sorted(z_map.items(), key=operator.itemgetter(1))
 
-   # get the order of the values
-   ordered_z = sorted(z_map.items(), key=operator.itemgetter(1))
+  # show the ordered_z
+  for c,l in ordered_z:
+     z = z_map[c] - 1
+     print(c, z)
 
-   # show the ordered_z
-   for c,l in ordered_z:
-              z = z_map[c] - 1
-              print(c, z)
+  # find the mines and order them from deepest to most shallow
+  mine_chars = list(set(re.findall(r'[a-zA-Z]',cuboid)))
 
-   # find the mines and order them from deepest to most shallow
-   mine_chars = list(set(re.findall(r'[a-zA-Z]',cuboid)))
+  deepest_mine = reduce(lambda highest,current: current if z_map[current] > z_map[highest] else highest, mine_chars)
 
-   deepest_mine = reduce(lambda highest,current: current if z_map[current] > z_map[highest] else highest, mine_chars)
-
-   depth = z_map[deepest_mine]
+  depth = z_map[deepest_mine]
 
 
   # generate a cubic data structure of correct dimensions
@@ -99,14 +120,21 @@ here we will turn the string into a cubic data structure that will allow us the 
                 for x in range(width)]
 
   # compute the mine coordinates in cubic space
-  for y,line in enumerate(cuboid.strip().split()):
+  for y,line in enumerate(cuboid.strip().split("\n")):
      for x,char in enumerate(list(line.strip())):
         if char in mine_chars:
            z = z_map[char]-1
            cube_space[x][y][z] = char
            print(x,y,z)
 
+  return cube_space     
+
 #+end_src
+
+#+RESULTS:
+| (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Z) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) |
+| (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Z) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Z) |
+| (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Z) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) | (. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .) |
 
 
 
@@ -160,12 +188,13 @@ to go all the way to the bottom of the z-axis.
 
 #+begin_src python
 
-  alpha = ((-1, -1), (-1, 1), (1, -1), (1, 1))
-  beta = ((-1, 0), (0, -1), (0, 1), (1, 0))
-  gamma = ((-1, 0), (0, 0), (1, 0))
-  delta = ((0, -1), (0, 0), (0, 1))
+  firing_patterns = [alpha = ((-1, -1), (-1, 1), (1, -1), (1, 1))
+                     beta = ((-1, 0), (0, -1), (0, 1), (1, 0))
+                     gamma = ((-1, 0), (0, 0), (1, 0))
+                     delta = ((0, -1), (0, 0), (0, 1))]
 
 #+end_src
+
 
 ****** step
 ****** score
