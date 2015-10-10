@@ -140,6 +140,8 @@ here we will turn the string into a cubic data structure that will allow us the 
 
 ****** vessel (ship)
 
+ #+BEGIN_EXAMPLE
+
          /\
         |==|
         |  |
@@ -164,6 +166,7 @@ here we will turn the string into a cubic data structure that will allow us the 
          ##
          ##
 
+     #+END_EXAMPLE
 
 ****** point (x,y,z)
 
