@@ -8,6 +8,7 @@ executable code using emacs org-mode babel, which provides the means to both
 document and run essential pieces of the similator's code inside this
 README.org document itself.
 
+
 ** publication 
 
 *** pdf
@@ -18,6 +19,14 @@ README.org document itself.
 ** test suite
 
 * Describe design
+
+** requirements
+**** pip install:
+nose
+mockito
+sure
+pytest
+pytest-cov
 
 ** running
 *** input

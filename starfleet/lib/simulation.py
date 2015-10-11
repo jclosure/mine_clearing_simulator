@@ -1,8 +1,7 @@
 import sys
 import ipdb
 
-
-# our domain
+# our modules
 import cuboid
 import step
 import vessel
@@ -17,6 +16,7 @@ reload(cuboid)
 reload(step)
 reload(vessel)
 
+# our domain
 Cuboid = cuboid.Cuboid
 Step = step.Step
 Vessel = vessel.Vessel
@@ -25,14 +25,17 @@ Vessel = vessel.Vessel
 
 class Simulation:
 
-    def __init__(self):
+    default_cuboid_file =  "../cuboid.dat"
+    default_steps_file = "../student_minesweeping_script.steps"
+    
+    def __init__(self, cuboid_file=default_cuboid_file,steps_file=default_steps_file):
         self.history = []
 
-        self.cuboid_file = "cuboid.dat"
-        self.steps_file = "student_minesweeping_script.steps"
+        self.cuboid_file = cuboid_file
+        self.steps_file =  steps_file 
 
         # use the file to name our ship
-        ship_name = self.cuboid_file.split("_")[0]
+        ship_name = cuboid_file.split("_")[0]
 
         # initialize vessel
         self.vessel = Vessel(ship_name)
@@ -49,7 +52,7 @@ class Simulation:
         # run the steps
         for step_input in self.step_inputs:
             print "running step: " + step_input
-            ipdb.set_trace()
+            #ipdb.set_trace()
             self.step(self.cuboid_input, step_input)
         
     def center_vessel(self):
