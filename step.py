@@ -11,21 +11,20 @@ class Step:
                        ('south', lambda x,y: (x, y-1)),
                        ('east', lambda x,y: (x-1, y)),
                        ('west', lambda x,y: (x+1, y)))
+
+    fall_distance = -1
     
-    def __init__(self, instructions):
-        self.fall = -1
-        self.lex(instructions)
+    def __init__(self, line):
+        self.lex(line)
         
-    def lex(self):
-        self.instructions  = self.instructions.split()
+    def lex(self, line):
+        self.instructions  = line.split()
 
         # resolve move
-        self.move = (m for m in self.available_moves
-                     if m[0] in self.instructions).next()
-        
+        self.move = next((m for m in self.available_moves
+                               if m[0] in self.instructions), None)
         # resolve firing_pattern
-        self.firing_pattern = (pat for pat in self.available_firing_patterns
-                               if pat[0] in self.instruction).next()
-
+        self.firing_pattern = next((pat for pat in self.available_firing_patterns
+                                    if pat[0] in self.instructions), None)
 
 

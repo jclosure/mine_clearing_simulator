@@ -1,44 +1,96 @@
+import sys
+import ipdb
 
-from cuboid import Cuboid
-from step import Step
-from vessel import Vessel
+
+# our domain
+import cuboid
+import step
+import vessel
+
+try:
+    reload
+except NameError:
+    # Python 3
+    from imp import reload
+
+reload(cuboid)
+reload(step)
+reload(vessel)
+
+Cuboid = cuboid.Cuboid
+Step = step.Step
+Vessel = vessel.Vessel
+
+# for easy debugging in ipython, do this: %load_ext autoreload
 
 class Simulation:
 
     def __init__(self):
         self.history = []
 
-        # read inputs
-        self.cuboid_input = open("./cuboid.dat", "r").read()
-        self.step_inputs = open("./student_minesweeping_script.steps", "r").read().split("\n")
+        self.cuboid_file = "cuboid.dat"
+        self.steps_file = "student_minesweeping_script.steps"
 
-        # build initial cuboid state
-        self.cuboid = Cuboid(self.cuboid_input)
+        # use the file to name our ship
+        ship_name = self.cuboid_file.split("_")[0]
 
         # initialize vessel
-        self.vessel = Vessel(name)
-        center_vessel()
+        self.vessel = Vessel(ship_name)
+        
+    def run(self):
+        # read inputs
+        self.cuboid_input = open(self.cuboid_file, "r").read()
+        self.step_inputs = open(self.steps_file, "r").read().split("\n")
 
+        # initialize cuboid and vessel state 
+        self.cuboid = Cuboid(self.cuboid_input)
+        self.center_vessel()
+
+        # run the steps
+        for step_input in self.step_inputs:
+            print "running step: " + step_input
+            ipdb.set_trace()
+            self.step(self.cuboid_input, step_input)
+        
     def center_vessel(self):
-        #set coordinates to center of 2d plane on top of 3d plane
-        self.vessel.coordinates = self.cuboid.center_point + (0,)
+        #set ship's coordinates to center of 2d plane at decent level on 3d plane
+        coords  = self.get_center(self.cuboid.width,
+                                  self.cuboid.height,
+                                  self.vessel.decent_level)
+
+        self.vessel.x, self.vessel.y, self.vessel.z = coords
+        
+        print "sited vessal at coordinates :" + str((coords))
         
     def step(self, cuboid_input, step_input):
-        cuboid = Cuboid(cuboid_input)
-        vessel = self.vessel
+        self.cuboid = Cuboid(cuboid_input)
         step = Step(step_input)
+        vessel = self.vessel
 
-        # act
-        act(vessel, cuboid, step)
+        # "Engage, Numba One!..."
+        vessel.engage(step, self.cuboid)
+
+        # now recompute 
+        self.compute_new_state()
         
-        # produce output
+    def compute_new_state(self):
+        vx,vy,vz = self.vessel.get_coordinates()
 
-        # recompute cuboid
-    
-        pass
+        cx,cy,cz = self.get_center(self.cuboid.width,
+                                   self.cuboid.height,
+                                   self.vessel.decent_level)
 
-    def act(self, vessel, cuboid, step):
-        # change position of ship in cuboid
+        # now replace self.cuboid with next frame
+        # todo:...
+            
+           
         
-    
-  
+    def get_center(self,width, height, depth):
+        # find cartesian center and decrement because we're zero indexed
+        return (((width / 2)  + (width % 2)) - 1,
+                ((height / 2) + (height % 2)) - 1,
+                depth)
+
+
+
+Simulation().run()
