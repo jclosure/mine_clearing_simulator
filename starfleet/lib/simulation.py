@@ -25,8 +25,8 @@ Vessel = vessel.Vessel
 
 class Simulation:
 
-    default_cuboid_file =  "../cuboid.dat"
-    default_steps_file = "../student_minesweeping_script.steps"
+    default_cuboid_file =  "cuboid.dat"
+    default_steps_file = "student_minesweeping_script.steps"
     
     def __init__(self, cuboid_file=default_cuboid_file,steps_file=default_steps_file):
         self.history = []
@@ -96,4 +96,4 @@ class Simulation:
 
 
 
-Simulation().run()
+#Simulation().run()

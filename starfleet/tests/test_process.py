@@ -15,3 +15,5 @@ class TestProcess(unittest.TestCase):
         self.assertRaises(ProcessException,
                           self.process.execute,
                           "sh -c 'return 1'")
+
+   

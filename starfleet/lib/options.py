@@ -11,13 +11,13 @@ class Options:
         self.parser = ArgumentParser(usage=usage)
         self.parser.add_argument('-c',
                                  '--cuboid',
-                                 default='../cuboid.dat',
+                                 default='cuboid.dat',
                                  dest='cuboid_file',
                                  help='This is the cuboid definition file')
 
         self.parser.add_argument('-s',
                                  '--script',
-                                 default='../student_minesweeping_script.steps',
+                                 default='student_minesweeping_script.steps',
                                  dest='steps_file',
                                  help='This is the file containing the instruction steps to fall through the cuboid')
                                  
