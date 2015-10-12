@@ -7,8 +7,6 @@ class Vessel:
         self.name = name
         # initialize defaults
         self.decent_level = 0
-        self.steps = []
-        self.hits = []
         self.x,self.y,self.z = 0,0,0
         
     def engage(self, steps_input, cuboid):
@@ -39,11 +37,16 @@ class Vessel:
                 if self.hit_p(mine, offsets, cuboid)]
         return hits
          
-    def hit_p(mine, offsets, cuboid):
-        #need to subtract/add offset to current coordinates to determine hit.
-        #if (offsets == (mx, my)):
+    def hit_p(self, mine, shots, cuboid):
+        ''' predicate to determine hits '''
         mx,my,mz = mine[0]
-        return True
+        for shot in shots:
+            ox, oy = shot
+            rx = self.x + ox
+            ry = self.y + oy
+            if rx == mx and ry == my:
+                return True
+        return False
     
     def move(self, x, y, cuboid):
         print "moving ship to new coordinates"

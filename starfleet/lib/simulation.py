@@ -73,7 +73,7 @@ class Simulation:
         step  = Step(step_input)
         
         # "Engage, Numba One!..."
-        self.vessel.step(step, cuboid)
+        self.vessel.step(step, self.cuboid)
 
         # now recompute 
         self.compute_new_state()

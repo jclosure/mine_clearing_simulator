@@ -7,6 +7,7 @@ class Step:
     def __init__(self, instructions):
         self.instructions = instructions
         self.operations = []
+        self.hits = []
         self.lex()
 
 

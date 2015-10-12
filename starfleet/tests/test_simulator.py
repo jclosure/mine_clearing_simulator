@@ -54,12 +54,13 @@ class TestSimulator(BaseTest):
         sim.step("east")
         this(sim.vessel.get_coordinates()).should.equal((3,3,-2))
 
-    # def test_vessel_firing(self):
-    #     #arrange
-    #     sim = self.sim
-    #     #act
-    #     step, vessel = sim.step("gamma")
-    #     #this(step.hits).should_not.be.empty
+    def test_vessel_targeting(self):
+        #arrange
+        sim = self.sim
+        #act
+        step, vessel = sim.step("north")
+        step, vessel = sim.step("delta south")
+        this(step.hits).should_not.be.empty
         
     # def test_step_engages(self):
     #     self.fail("implement")
