@@ -14,6 +14,7 @@ class Cuboid:
     def __init__(self, input):
         if self.validate(input):
             self.input = input
+            self.lines = self.input.strip().split(self.eol)
             #build out cuboid
             self.compute_characteristics()              
             self.generate_cube_space()
@@ -52,7 +53,8 @@ class Cuboid:
     # compute the mine coordinates and place them in cubic space
     def place_mines(self):
         self.mines = []
-        for y,line in enumerate(self.input.strip().split(self.eol)):
+        # reversing the lines to make y=0 at the bottom
+        for y,line in enumerate(reversed(self.lines)):
             for x,char in enumerate(list(line.strip())):
                 if char in self.mine_chars:
                     z = self.z_map[char]

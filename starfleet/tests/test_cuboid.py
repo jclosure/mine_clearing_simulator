@@ -39,7 +39,7 @@ class TestCuboid(BaseTest):
         print "east: ", east
         print "west: ", west
 
-        this(north).should.be.equal(((2, 4, -45), 'N'))
-        this(south).should.be.equal(((2, 0, -40), 'S'))
+        this(north).should.be.equal(((2, 4, -40), 'N'))
+        this(south).should.be.equal(((2, 0, -45), 'S'))
         this(east).should.be.equal(((4, 2, -31), 'E'))
         this(west).should.be.equal(((0, 2, -49), 'W'))
