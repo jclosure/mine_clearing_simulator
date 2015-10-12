@@ -32,6 +32,7 @@ class Simulation:
         print "creating new simulation"
         
         self.history = []
+        self.steps_run = []
 
         self.cuboid_file = cuboid_file
         self.steps_file =  steps_file 
@@ -52,22 +53,11 @@ class Simulation:
 
         
     def engage(self):
-
-        self.steps_run = []
-        
         # run the steps
-        self.vessel.engage(self.step_inputs)
-        #self.steps_run.append(step_input)
+        self.steps_run = self.steps_run + map(lambda step_input:
+                                              self.step(step_input),
+                                              self.step_inputs)
         
-    def center_vessel(self):
-        #set ship's coordinates to center of 2d plane at decent level on 3d plane
-        coords  = self.get_center(self.cuboid.width,
-                                  self.cuboid.height,
-                                  self.vessel.decent_level)
-
-        self.vessel.x, self.vessel.y, self.vessel.z = coords
-        
-        print "sited vessal at coordinates :" + str((coords))
         
     def step(self, step_input):
         step  = Step(step_input)
@@ -78,7 +68,7 @@ class Simulation:
         # now recompute 
         self.compute_new_state()
 
-        return (step, vessel) 
+        return (step, self.vessel, self.cuboid) 
         
     def compute_new_state(self):
         vx,vy,vz = self.vessel.get_coordinates()
@@ -91,6 +81,15 @@ class Simulation:
         # todo:...
             
            
+    def center_vessel(self):
+        #set ship's coordinates to center of 2d plane at decent level on 3d plane
+        coords  = self.get_center(self.cuboid.width,
+                                  self.cuboid.height,
+                                  self.vessel.decent_level)
+
+        self.vessel.x, self.vessel.y, self.vessel.z = coords
+        
+        print "sited vessal at coordinates :" + str((coords))
         
     def get_center(self,width, height, depth):
         # find cartesian center and decrement because we're zero indexed

@@ -9,11 +9,6 @@ class Vessel:
         self.decent_level = 0
         self.x,self.y,self.z = 0,0,0
         
-    def engage(self, steps_input, cuboid):
-        steps = [Step(s) for s in steps_input]
-        for step in steps:
-            self.step(step, cuboid)
-        
     def step(self, step, cuboid):
         print "running step: " + step.instructions
         
