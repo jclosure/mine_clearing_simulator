@@ -71,4 +71,26 @@ class Cuboid:
         x,y,z = coordinates
         ipdb.set_trace()
         
-        
+    def most_east_mine(self):
+        most_east_mine = reduce(lambda highest,current: current
+                                if current[0][0] > highest[0][0]
+                                else highest, self.mines)
+        return most_east_mine
+
+    def most_west_mine(self):
+        most_west_mine = reduce(lambda lowest,current: current
+                                if current[0][0] < lowest[0][0]
+                                else lowest, self.mines)
+        return most_west_mine
+
+    def most_north_mine(self):
+        most_north_mine = reduce(lambda highest,current: current
+                                 if current[0][1] > highest[0][1]
+                                 else highest, self.mines)
+        return most_north_mine
+
+    def most_south_mine(self):
+        most_south_mine = reduce(lambda lowest,current: current
+                                 if current[0][1] < lowest[0][1]
+                                 else lowest, self.mines)
+        return most_south_mine

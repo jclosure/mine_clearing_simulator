@@ -59,11 +59,10 @@ class TestSimulator(BaseTest):
         sim = self.sim
         #act
         step, vessel, cuboid = sim.step("north")
+        this(step.hits).should.be.empty
         step, vessel, cuboid = sim.step("delta south")
         this(step.hits).should_not.be.empty
         
-    # def test_step_engages(self):
-    #     self.fail("implement")
 
     # def test_compute_new_state(self):
     #     self.fail("implement")

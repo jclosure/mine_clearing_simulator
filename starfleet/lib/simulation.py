@@ -61,24 +61,47 @@ class Simulation:
         
     def step(self, step_input):
         step  = Step(step_input)
+        cur_cuboid = self.cuboid
         
         # "Engage, Numba One!..."
-        self.vessel.step(step, self.cuboid)
+        self.vessel.step(step, cur_cuboid)
 
-        # now recompute 
-        self.compute_new_state()
-
-        return (step, self.vessel, self.cuboid) 
+        # cleanup any hits
+        self.remove_mines(step.hits, cur_cuboid)
+            
+        # now recompute dimensions and chars
+        new_cuboid = self.compute_new_state(cur_cuboid)
         
-    def compute_new_state(self):
+        return (step, self.vessel, cur_cuboid) 
+
+    def remove_mines(self, mines, cuboid):
+        for mine in mines:
+            print "removing hit mine: ", mine
+            coords, char = mine
+            x,y,z = coords
+            cuboid.cube_space[x][y][z] = "."
+            cuboid.mines = [m for m
+                            in mines
+                            if not coords == m[0]]
+    
+    def compute_new_state(self, cur_cuboid):
         vx,vy,vz = self.vessel.get_coordinates()
 
-        cx,cy,cz = self.get_center(self.cuboid.width,
-                                   self.cuboid.height,
+        cx,cy,cz = self.get_center(cur_cuboid.width,
+                                   cur_cuboid.height,
                                    self.vessel.decent_level)
+        # make new dotmap
+        cw = cur_cuboid.width
+        ch = cur_cuboid.height
 
-        # now replace self.cuboid with next frame
-        # todo:...
+        
+
+        
+        
+
+
+
+
             
            
     def center_vessel(self):
