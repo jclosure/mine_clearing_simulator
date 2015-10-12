@@ -1,30 +1,36 @@
-
+from affordances import navigation
+from affordances import firing_patterns
+import ipdb
 
 class Step:
-
-    available_firing_patterns = (('alpha',((-1, -1), (-1, 1), (1, -1), (1, 1))),
-                                 ('beta',((-1, 0), (0, -1), (0, 1), (1, 0))),
-                                 ('gamma',((-1, 0), (0, 0), (1, 0))),
-                                 ('delta',((0, -1), (0, 0), (0, 1))))
-
-    available_moves = (('north', lambda x,y: (x, y+1)),
-                       ('south', lambda x,y: (x, y-1)),
-                       ('east', lambda x,y: (x-1, y)),
-                       ('west', lambda x,y: (x+1, y)))
-
-    fall_distance = -1
     
-    def __init__(self, line):
-        self.lex(line)
+    def __init__(self, instructions):
+        self.instructions = instructions
+        self.operations = []
+        self.lex()
+
+
+    def lex(self):
+
+        ''' kung-fu with comprehensions as generators '''
         
-    def lex(self, line):
-        self.instructions  = line.split()
+        self.operations
 
-        # resolve move
-        self.move = next((m for m in self.available_moves
-                               if m[0] in self.instructions), None)
-        # resolve firing_pattern
-        self.firing_pattern = next((pat for pat in self.available_firing_patterns
-                                    if pat[0] in self.instructions), None)
+        # probe affordances for lexical dispatchers
+        for instruction in self.instructions.split():
+            
+            resolved = next((("move", instruction, nav)
+                             for nav in navigation
+                             if nav[0]==instruction), None)
+            
+            if  resolved is None:
+                resolved = next((("fire", instruction, pat)
+                                for pat in firing_patterns
+                                if pat[0]==instruction), None)
+            self.operations.append(resolved)
+            
 
-
+        self.operations = filter(lambda x: x is not None, self.operations) 
+        
+  
+        

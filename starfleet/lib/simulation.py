@@ -25,35 +25,39 @@ Vessel = vessel.Vessel
 
 class Simulation:
 
-    default_cuboid_file =  "cuboid.dat"
-    default_steps_file = "student_minesweeping_script.steps"
+    default_cuboid_file =  "./test_input/cuboid.dat"
+    default_steps_file = "./test_input/student_minesweeping_script.steps"
     
     def __init__(self, cuboid_file=default_cuboid_file,steps_file=default_steps_file):
+        print "creating new simulation"
+        
         self.history = []
 
         self.cuboid_file = cuboid_file
         self.steps_file =  steps_file 
 
-        # use the file to name our ship
-        ship_name = cuboid_file.split("_")[0]
-
-        # initialize vessel
-        self.vessel = Vessel(ship_name)
-        
-    def run(self):
         # read inputs
         self.cuboid_input = open(self.cuboid_file, "r").read()
         self.step_inputs = open(self.steps_file, "r").read().split("\n")
 
         # initialize cuboid and vessel state 
         self.cuboid = Cuboid(self.cuboid_input)
+
+        # use the file to name our ship
+        ship_name = cuboid_file.split("_")[0]
+
+        # initialize vessel
+        self.vessel = Vessel(ship_name)
         self.center_vessel()
 
+        
+    def engage(self):
+
+        self.steps_run = []
+        
         # run the steps
-        for step_input in self.step_inputs:
-            print "running step: " + step_input
-            #ipdb.set_trace()
-            self.step(self.cuboid_input, step_input)
+        self.vessel.engage(self.step_inputs)
+        #self.steps_run.append(step_input)
         
     def center_vessel(self):
         #set ship's coordinates to center of 2d plane at decent level on 3d plane
@@ -65,16 +69,16 @@ class Simulation:
         
         print "sited vessal at coordinates :" + str((coords))
         
-    def step(self, cuboid_input, step_input):
-        self.cuboid = Cuboid(cuboid_input)
-        step = Step(step_input)
-        vessel = self.vessel
-
+    def step(self, step_input):
+        step  = Step(step_input)
+        
         # "Engage, Numba One!..."
-        vessel.engage(step, self.cuboid)
+        self.vessel.step(step, cuboid)
 
         # now recompute 
         self.compute_new_state()
+
+        return (step, vessel) 
         
     def compute_new_state(self):
         vx,vy,vz = self.vessel.get_coordinates()
