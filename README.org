@@ -322,6 +322,19 @@ is computed by evaluating the number of points (1km distance) between:
 
 vessel and mines
 vessel and edges of cuboid
+
+* Status
+
+** Work in progress..
+
+Still need to implement the following:
+
+*** scoring
+*** print output correctly
+*** better validations
+*** hit mine marking
+
+
 * Describe approach
 
 ** Document and code along the way
