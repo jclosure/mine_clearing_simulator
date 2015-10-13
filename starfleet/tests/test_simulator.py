@@ -3,27 +3,41 @@ import inspect
 
 from mockito import *
 
+
+
 from lib import Options
 from lib import Simulation
 from lib import Step
 from lib import toolbox
 
+
 from sure import *
 
 # mockito: https://code.google.com/p/mockito-python/
 import sys, os
+import yaml
+import imp
+from inspect import getsourcefile
+from os.path import abspath
+from os.path import dirname
+from os.path import join
 
-from base_test import BaseTest
+dir_path = abspath(join(dirname(getsourcefile(lambda:0))))
 
-class TestSimulator(BaseTest):
+def run():
+    import pytest
+    args_str = "-k test_simulator"
+    pytest.main(args_str.split(" "))
+
+class TestSimulator:
 
 
     
     def configure_simulator(self,
                             cuboid_file="cuboid.dat",
                             steps_file="student_minesweeping_script.steps"):
-        self.input_dir = self.this_dir() + "/test_input/"
-        self.output_dir = self.this_dir() + "/test_output/"
+        self.input_dir = dir_path + "/test_input/"
+        self.output_dir = dir_path + "/test_output/"
         self.cuboid_file = self.input_dir + cuboid_file
         self.steps_file = self.input_dir + steps_file
         self.output_file = self.output_dir + steps_file + ".out"

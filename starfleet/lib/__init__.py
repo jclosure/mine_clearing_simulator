@@ -22,6 +22,11 @@ except NameError:
     # Python 3
     from imp import reload
 
+from sys import modules
+try:
+    test_shim = modules['test_shim']
+except KeyError:
+    import test_shim as test_shim
 
 # domain class constant's are exposed from the "lib" module's api
 Process = process.Process
@@ -31,7 +36,6 @@ Simulation = simulation.Simulation
 Step = step.Step
 Cuboid = cuboid.Cuboid
 Vessel = vessel.Vessel
-
 
 
 

@@ -1,11 +1,13 @@
 import ipdb
+
+from sure import *
+
 from lib import Options
 from lib import Cuboid
 from lib import Vessel
 from lib import computer
 from lib import toolbox
 
-from sure import *
 
 # mockito: https://code.google.com/p/mockito-python/
 # py.test stdout: https://pytest.org/latest/capture.html
