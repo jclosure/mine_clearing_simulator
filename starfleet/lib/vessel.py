@@ -3,6 +3,8 @@ from affordances import decent_rate
 
 class Vessel:
 
+    decent_rate = decent_rate
+    
     def __init__(self, name="Enterprise"):
         self.name = name
         # initialize defaults

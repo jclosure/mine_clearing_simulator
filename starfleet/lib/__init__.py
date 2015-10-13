@@ -1,6 +1,7 @@
 import sys
 import ipdb
 
+
 import simulation
 import step
 import cuboid
@@ -11,6 +12,9 @@ import process
 # singleton modules are not classes
 import toolbox
 import computer
+import logger
+
+logger.setup_logging()
 
 try:
     reload
@@ -27,4 +31,8 @@ Simulation = simulation.Simulation
 Step = step.Step
 Cuboid = cuboid.Cuboid
 Vessel = vessel.Vessel
+
+
+
+
 

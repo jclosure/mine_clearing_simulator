@@ -6,6 +6,8 @@ import cuboid
 import step
 import vessel
 import computer
+import logger
+import logging as log
 
 try:
     reload
@@ -31,7 +33,7 @@ class Simulation:
     default_steps_file = "./test_input/student_minesweeping_script.steps"
     
     def __init__(self, cuboid_file=default_cuboid_file,steps_file=default_steps_file):
-        print "creating new simulation"
+        log.info("creating new simulation")
 
         # replay
         self.history = []
@@ -46,7 +48,7 @@ class Simulation:
         self.initialize_cuboid()
         self.initialize_flight_plan()
         self.initialize_vessel()
-        
+    
 
         
     def engage(self):
@@ -114,7 +116,6 @@ class Simulation:
         else:
             self.cuboid_input = cuboid_input
 
-        # initialize cuboid and vessel state 
         self.cuboid = Cuboid(self.cuboid_input)
 
 
@@ -218,21 +219,13 @@ class Simulation:
     def center_vessel(self):
 
         #set ship's coordinates to center of 2d plane at decent level on 3d plane
-        coords  = self.get_center(self.cuboid.width,
-                                  self.cuboid.height,
-                                  self.vessel.decent_level)
+        coords  = self.cuboid.get_central_coordinates()
 
-        self.vessel.x, self.vessel.y, self.vessel.z = coords
+        self.vessel.x, self.vessel.y, middle  = coords
         
         print "sited vessal at coordinates :" + str((coords))
         
-    def get_center(self,width, height, depth):
-
-        # find cartesian center and decrement because we're zero indexed
-        return (((width / 2)  + (width % 2)) - 1,
-                ((height / 2) + (height % 2)) - 1,
-                depth)
-
+  
 
 
 #Simulation().run()
