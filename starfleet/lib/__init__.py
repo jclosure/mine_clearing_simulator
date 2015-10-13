@@ -8,6 +8,7 @@ import cuboid
 import vessel
 import options
 import process
+import grid
 
 # singleton modules are not classes
 import toolbox
@@ -22,6 +23,7 @@ except NameError:
     # Python 3
     from imp import reload
 
+# inject test_shim before we load the domain    
 from sys import modules
 try:
     test_shim = modules['test_shim']
@@ -36,7 +38,7 @@ Simulation = simulation.Simulation
 Step = step.Step
 Cuboid = cuboid.Cuboid
 Vessel = vessel.Vessel
-
+Grid = grid.Grid
 
 
 

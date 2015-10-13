@@ -28,6 +28,12 @@ class Cuboid:
         
     # stub validation
     def validate(self, string_input):
+
+        # must have lines
+        kilometers = [line for line in string_input if len(line) > 0] 
+        if not kilometers:
+            raise CuboidException("EDGE OF THE UNIVERSE ... YOU RAN OUT OF SPACETIME!")
+        
         # must be an odd number on x and y
         # all x lines must be same width
         # all y lines must be same width
@@ -38,7 +44,7 @@ class Cuboid:
     def compute_characteristics(self):        
 
         # get the set of mine characters
-        self.mine_chars = list(set(re.findall(r'[a-zA-Z]', self.string_input)))
+        self.mine_chars = list(re.findall(r'[a-zA-Z]', self.string_input))
      
         # lookup chars
         self.mine_chars = map(lambda char:
@@ -49,7 +55,10 @@ class Cuboid:
         #ipdb.set_trace()
 
         self.lines = self.string_input.strip().split(self.eol)
+
+        self.lines = [line for line in self.lines if len(line) > 0] 
         
+        # todo: make use lines
         # compute height and width
         self.width = len(list(self.string_input.split()[0].strip()))
         self.height = len(self.string_input.split(self.eol))
@@ -149,7 +158,7 @@ class Cuboid:
     def render(self):
         builder = StringIO()
         # note: we are decrementing height to accomodate for the index being one lowe
-        print "BEFORE: \n", self.string_input, "\n"
+        # print "BEFORE: \n", self.string_input, "\n"
         for y in range(self.height)[::-1]: 
             y_mines = [m for m in self.mines if m[0][1] == y]
             for x in xrange(self.width):
@@ -171,3 +180,16 @@ class Cuboid:
     
     def clone(self):
         return deepcopy(self)
+
+
+##### CUBOID EXCEPTIONS #####
+
+class CuboidException(Exception):
+    def __init__(self, message, errors = [], data=[]):
+        
+        # Call the base class constructor with the parameters it needs
+        super(CuboidException, self).__init__(message)
+
+        # todo: do some specific handling
+        self.errors = errors
+        self.data = data

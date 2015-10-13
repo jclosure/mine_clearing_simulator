@@ -3,6 +3,7 @@ import ipdb
 
 # our modules
 import cuboid
+import grid
 import step
 import vessel
 import computer
@@ -18,11 +19,13 @@ except NameError:
 reload(cuboid)
 reload(step)
 reload(vessel)
+reload(grid)
 
 # our domain
 Cuboid = cuboid.Cuboid
 Step = step.Step
 Vessel = vessel.Vessel
+Grid = grid.Grid
 
 # for easy debugging in ipython, do this: %load_ext autoreload
 
@@ -59,17 +62,21 @@ class Simulation:
         
     def step(self, step_input):
 
+        print "----------- START STEP -----------------"
+        
         # create step operations
         step = Step(step_input)
-
+        
         # ship operates in cuboid
         self.vessel.step(step, self.cuboid)
-
+        
         # cleanup any hits
         self.cuboid.sweep_mines(step.hits)
 
         # flash freeze and stash the universe
         last_cuboid = self.cuboid.clone()
+
+
         
         # now recompute state
         self.recompute_cuboid()
@@ -81,14 +88,61 @@ class Simulation:
 
         cuboid_face = self.cuboid.render()
 
-        print cuboid_face
+        print "untrimmed face: \n" + cuboid_face
 
+        cuboid_face = self.trim_face(cuboid_face)
+        print "trimmed face: \n" + cuboid_face
+
+        cuboid_face = self.grow_face(cuboid_face)
+        print "grown face: \n" + cuboid_face
+
+       
         self.initialize_cuboid(cuboid_face,
                                self.vessel.decent_rate,
                                self.vessel.decent_level)
-        
-      
 
+        print "----------- END STEP -----------------"
+        
+    def trim_face(self, face):
+
+         # get all mine coords
+        mine_coords = [mine[0] for mine in self.cuboid.mines]
+        # add the ship's coords
+        coords = mine_coords + [self.vessel.get_coordinates()]
+
+        print "OBJECT COORDS: ", coords
+
+        west_edge, east_edge, south_edge, north_edge = computer.smallest_rectangle(coords)
+
+        print "EDGES: ",  west_edge, east_edge, south_edge, north_edge
+        
+        g = Grid(face)
+
+        western_offset = abs(west_edge[1])
+        eastern_offset = abs(g.width - east_edge[1] - 1)
+        northern_offset = abs(g.height - north_edge[1] - 1)
+        southern_offset = abs(south_edge[1])
+
+        print "OFFSETS: ", western_offset, eastern_offset, northern_offset, southern_offset
+
+        # GOOD
+        g.shrink_west(western_offset)
+  
+        g.shrink_east(eastern_offset)
+  
+        g.shrink_north(northern_offset)
+   
+        # todo: ...
+        # g.shrink_south(southern_offset)
+    
+        new_face = g.render()
+
+        return new_face
+
+    def grow_face(self, face):
+        #todo: ..
+        return face
+        
     def initialize_vessel(self):
         
         # use the file to name our ship
@@ -125,7 +179,11 @@ class Simulation:
         coords  = self.cuboid.get_central_coordinates()
 
         self.vessel.x, self.vessel.y, middle  = coords
+        self.vessel.z = 0
         
-        print "sited vessal at coordinates :" + str((coords))
+        print "sited vessal at coordinates :" + str((self.vessel.x, self.vessel.y, self.vessel.z))
         
 
+
+    def spool_output(self, output):
+        
