@@ -37,9 +37,11 @@ class TestComputer(BaseTest):
         cub = self.cub
         ves = self.ves
 
-        # base
+        # get all mine coords
         mine_coords = [mine[0] for mine in cub.mines]
+        # add the ship's coords
         coords = mine_coords + [ves.get_coordinates()]
+
         # act
         west_edge, east_edge, south_edge, north_edge = computer.smallest_rectangle(coords)
         

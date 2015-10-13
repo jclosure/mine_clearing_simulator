@@ -34,12 +34,12 @@ sys.path.insert(1,dir_path)
 
 from sys import modules
 try:
-    module = modules['lib']
+    lib = modules['lib']
 except KeyError:
     lib = imp.load_source('lib',lib_path) 
 
 try:
-    module = modules["test_shim"]
+    test_shim = modules["test_shim"]
 except KeyError:
     test_shim = imp.load_source('test_shim', shim_path) 
 
