@@ -41,10 +41,13 @@ class Cuboid:
         self.height = len(self.string_input.split(self.eol))
 
         #compute depth
-        self.deepest_mine = reduce(lambda lowest,current: current
-                                   if self.z_map[current] < self.z_map[lowest]
-                                   else lowest, self.mine_chars)
-        self.depth = self.z_map[self.deepest_mine]
+        if not self.mine_chars:
+            self.depth = 0
+        else:
+            self.deepest_mine = reduce(lambda lowest,current: current
+                                       if self.z_map[current] < self.z_map[lowest]
+                                       else lowest, self.mine_chars)
+            self.depth = self.z_map[self.deepest_mine]
         
     # generate a cubic data structure of correct dimensions
     # note: z-axis is negatively oriented to allow tracking of planar decent
@@ -113,7 +116,8 @@ class Cuboid:
         
     def render(self):
         builder = StringIO()
-        for y in reversed(xrange(self.height)):
+        # note: we are decrementing height to accomodate for the index being one lower
+        for y in reversed(xrange(self.height - 1)): 
             y_mines = [m for m in self.mines if m[0][1] == y]
             for x in xrange(self.width):
                 xy_mine = next((m for m in y_mines if m[0][0] == x), None)

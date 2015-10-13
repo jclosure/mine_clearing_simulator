@@ -5,6 +5,7 @@ import ipdb
 import cuboid
 import step
 import vessel
+import computer
 
 try:
     reload
@@ -57,9 +58,11 @@ class Simulation:
         
         
     def step(self, step_input):
+
+        # create step operations
         step = Step(step_input)
-        
-        # "Engage, Numba One!..."
+
+        # ship operates in cuboid
         self.vessel.step(step, self.cuboid)
 
         # cleanup any hits
@@ -76,11 +79,18 @@ class Simulation:
 
     def recompute_cuboid(self):
 
-        #TODO:!!!!
-        # noop for now
-        return self.cuboid
+        cuboid_face = self.cuboid.render()
+
+        print cuboid_face
+        
+        self.initialize_cuboid(cuboid_face)
+        
+      
+        
+
 
     def initialize_vessel(self):
+        
         # use the file to name our ship
         ship_name = self.cuboid_file.split("_")[0]
 
@@ -89,6 +99,7 @@ class Simulation:
         self.center_vessel()
     
     def initialize_flight_plan(self, step_inputs=None):
+
         if step_inputs is None:
             self.step_inputs = open(self.steps_file, "r").read().split("\n")
         else:
@@ -96,8 +107,6 @@ class Simulation:
             self.step_inputs = step_inputs.read().split("\n")
 
     def initialize_cuboid(self, cuboid_input=None):
-
-        ''' cheeky generate cuboid '''
 
         # read inputs
         if cuboid_input is None:
@@ -207,6 +216,7 @@ class Simulation:
 
            
     def center_vessel(self):
+
         #set ship's coordinates to center of 2d plane at decent level on 3d plane
         coords  = self.get_center(self.cuboid.width,
                                   self.cuboid.height,
@@ -217,6 +227,7 @@ class Simulation:
         print "sited vessal at coordinates :" + str((coords))
         
     def get_center(self,width, height, depth):
+
         # find cartesian center and decrement because we're zero indexed
         return (((width / 2)  + (width % 2)) - 1,
                 ((height / 2) + (height % 2)) - 1,
