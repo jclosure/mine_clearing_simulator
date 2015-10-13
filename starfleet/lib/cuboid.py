@@ -71,6 +71,16 @@ class Cuboid:
                     
         # order the mines by depth
         self.mines = sorted(self.mines, key=lambda mine: mine[0][2])
+
+    def sweep_mines(self, hit_mines):
+        for mine in hit_mines:
+            print "removing hit mine: ", mine
+            coords, char = mine
+            x,y,z = coords
+            self.cube_space[x][y][z] = "."
+            self.mines = [m for m
+                          in self.mines
+                      if not coords == m[0]]
         
     def recompute_space(self, coordinates):
         x,y,z = coordinates

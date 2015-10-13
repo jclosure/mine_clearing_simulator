@@ -1,5 +1,6 @@
 from affordances import navigation
 from affordances import firing_patterns
+from copy import deepcopy
 import ipdb
 
 class Step:
@@ -13,7 +14,7 @@ class Step:
 
     def lex(self):
 
-        ''' kung-fu with comprehensions as generators '''
+        ''' kung-fu projection with comprehension generators '''
         
         self.operations
 
@@ -34,4 +35,14 @@ class Step:
         self.operations = filter(lambda x: x is not None, self.operations) 
         
   
+    def clone(self):
+        return deepcopy(self)    
+
+    def __str__(self):
+        return self.render()
         
+    def __repr__(self):
+        return self.__str__()
+    
+    def render(self):
+        return str((self.instructions, self.operations, self.hits))

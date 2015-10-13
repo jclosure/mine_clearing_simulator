@@ -41,7 +41,7 @@ class TestSimulator(BaseTest):
     def test_run_sequence_is_stable(self):
        sim = self.sim
        sim.engage()      
-       this(len(sim.steps_run)).should.equal(len(sim.step_inputs))
+       this(len(sim.history)).should.equal(len(sim.step_inputs))
        
     def test_vessel_movement(self):
         sim = self.sim
@@ -58,9 +58,9 @@ class TestSimulator(BaseTest):
         #arrange
         sim = self.sim
         #act
-        step, vessel, cuboid = sim.step("north")
+        step, vessel, ocuboid, ncuboid = sim.step("north")
         this(step.hits).should.be.empty
-        step, vessel, cuboid = sim.step("delta south")
+        step, vessel, ocuboid, ncuboid = sim.step("delta south")
         this(step.hits).should_not.be.empty
         
 
