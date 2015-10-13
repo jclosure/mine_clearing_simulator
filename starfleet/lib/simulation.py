@@ -49,11 +49,9 @@ class Simulation:
         self.initialize_flight_plan()
         self.initialize_vessel()
     
-
-        
     def engage(self):
 
-        # run the steps (pythonic event-sourcing)
+        # map over the steps
         self.history = self.history + map(lambda step_input:
                                               self.step(step_input),
                                               self.step_inputs)
@@ -84,12 +82,12 @@ class Simulation:
         cuboid_face = self.cuboid.render()
 
         print cuboid_face
-        
-        self.initialize_cuboid(cuboid_face)
+
+        self.initialize_cuboid(cuboid_face,
+                               self.vessel.decent_rate,
+                               self.vessel.decent_level)
         
       
-        
-
 
     def initialize_vessel(self):
         
@@ -108,113 +106,18 @@ class Simulation:
             #note we're going to pass in the script as a string here..
             self.step_inputs = step_inputs.read().split("\n")
 
-    def initialize_cuboid(self, cuboid_input=None):
+    def initialize_cuboid(self, cuboid_input=None, decent_rate=0, decent_level=0):
 
         # read inputs
         if cuboid_input is None:
             self.cuboid_input = open(self.cuboid_file, "r").read()
         else:
             self.cuboid_input = cuboid_input
-
-        self.cuboid = Cuboid(self.cuboid_input)
-
-
-
-    # OLD CARGO NEED TO GO THROUGH
+            
         
-    # def compute_new_state(self, cur_cuboid):
-    #     vx,vy,vz = self.vessel.get_coordinates()
-
-    #     cx,cy,cz = self.get_center(cur_cuboid.width,
-    #                                cur_cuboid.height,
-    #                                self.vessel.decent_level)
-
-    #     ncenter = (vx, vy, vz)
-
-    #     # make new dotmap
-    #     cheight = cur_cuboid.height
-    #     cwidth = cur_cuboid.width
+        print "initializing cuboid at decent_level: ", decent_level
         
-
-    #     # measure the distance between the vessel and the current 
-
-    #     c_north_edge = cheight - 1
-    #     c_south_edge = 0
-    #     c_east_edge = cwidth - 1
-    #     c_east_edge = 0
-
-    #     cndiff = ('north_diff', ncenter - c_north_edge)
-    #     csdiff = ('south_diff',ncenter - c_south_edge)
-    #     cediff = ('east_diff', ncenter - c_east_edge)
-    #     cwdiff = ('west_diff', ncenter - c_west_edge)
-
-    #     cdiffs = [cndiff,csdiff,cediff,cwdiff]
-    #     longest_cdiff = reduce(lambda highest,current: current
-    #                            if current > highest
-    #                            else highest, cdiffs)
-
-    #     # now make extend or shrink each axis accordingly,
-    #     # if there is a mine at a distance greater than
-    #     # the cdiff, that edge changes and it's peer edge
-    #     # must be expanded to keep the ship centered
-    #     # do this on both dimensions.
-        
-    #     # # current furthes mine axis values
-    #     # north_most_mine = cur_cuboid.most_north_mine()
-    #     # south_most_mine = cur_cuboid.most_south_mine()
-    #     # east_most_mine = cur_cuboid.most_east_mine()
-    #     # west_most_mine = cur_cuboid.most_west_mine()
-        
-        
-    #     # current furthes mine axis values
-    #     m_north_edge = cur_cuboid.most_north_mine()[0][1]
-    #     m_south_edge = cur_cuboid.most_south_mine()[0][1]
-    #     m_east_edge = cur_cuboid.most_east_mine()[0][0]
-    #     m_west_edge = cur_cuboid.most_west_mine()[0][0]
-
-    
-        
-        
-             
-    #     # # new dimensions
-    #     # nheigth_d = abs(north_edge) - abs(south_edge)
-    #     # nwidth_d = abs(east_edge) - abs(west_edge)
-
-    #     # nheigth = cheight - nheigth_d
-    #     # nwidth = cwidth - nwidth_d
-
-        
-    #     ## figure this out by looking at the successful exemplar's moves
-    #     ## vx_center = nwidth - (nwidth / vx)
-
-        
-        
-    #     ## need to push out or pull in to ensure the ship is at the center of the new 
-        
-    #     # new center
-    #     # ncenter = self.get_center(nwidth, nheigth, ndepth)
-
-    #     # # compute the adjustments to the sited elements
-    #     # ny_offset =  abs(cheight) - abs(nheigth)
-    #     # nx_offset =  abs(cwidth) - abs(nwidth) 
-
-        
-    #     # ensure odd dimensions
-    #     if nheigth % 2 == 0:
-    #         nheigth = nheigth + 1
-    #     if nwidth % 2 == 0:
-    #         nwidth = nwidth + 1
-
-        
-    #     # compute the new positions of the mines
-    #     nmines = []
-    #     for mine in cur_cuboid.mines:
-    #         coords, char = mine
-    #         x,y,z = coords
-    #         # computing new mine coordinates and a new char
-    #         nmine = ((x-nx_offset, y-ny_offset, z+1), cur_cuboid.z_map[z+1])
-    #         nmines.append(nmine)
-
+        self.cuboid = Cuboid(self.cuboid_input, decent_rate * -1)
            
     def center_vessel(self):
 
@@ -225,7 +128,4 @@ class Simulation:
         
         print "sited vessal at coordinates :" + str((coords))
         
-  
 
-
-#Simulation().run()

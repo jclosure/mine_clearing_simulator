@@ -15,9 +15,9 @@ class Cuboid:
     empty_space = "."
     missed_mine = "*"
     
-    def __init__(self, string_input, decent_level=0):
+    def __init__(self, string_input, decent_offset=0):
 
-        self.decent_level = decent_level
+        self.decent_offset = decent_offset
         
         if self.validate(string_input):
             self.string_input = string_input
@@ -94,7 +94,7 @@ class Cuboid:
         charv = self.z_map[char]
         resolved = char
         for c, v in self.z_map.iteritems():
-            if v == charv - self.decent_level:
+            if v == charv - self.decent_offset:
                 print "adjusting char: ", char, " to ", c
                 resolved = c
         self.string_input = self.string_input.replace(char,resolved)
