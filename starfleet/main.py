@@ -7,7 +7,6 @@ if __name__ == '__main__':
     options = Options()
     opts = options.parse(sys.argv[1:])
 
-    sim  = Simulation()
+    sim  = Simulation(opts.cuboid_file, opts.steps_file)
+    sim.engage()
 
-    #v.date()
-    #v.print_example_arg()
