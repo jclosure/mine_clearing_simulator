@@ -1,4 +1,6 @@
 import ipdb
+
+
 # steps:
 # 1. chop rectangle to mines and ship
 # 2. find longest diff between ship and edges
@@ -62,10 +64,7 @@ def get_center_offsets(ends, pos):
     
         
     
-# def push_out_rectangle(rect, furthest, offset):
-#     # ensure that all edges except furthest are at least 'offset' away
-#     for edge in rect:
-#         if not edge == furthest:
+
             
 
 
@@ -101,8 +100,7 @@ def resize_cube_space(cuboid, vessel_coordinates):
                            else highest, cdiffs)
 
 
-    
-    
+
     
 def get_center(self,width, height):
     # find cartesian center and decrement because we're zero indexed

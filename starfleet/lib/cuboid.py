@@ -1,7 +1,10 @@
 
 
 import re
+from copy import deepcopy
 import ipdb
+from cStringIO import StringIO
+from operator import itemgetter, attrgetter, methodcaller
 
 class Cuboid:
 
@@ -11,17 +14,17 @@ class Cuboid:
     empty_space = "."
     missed_mine = "*"
     
-    def __init__(self, input):
-        if self.validate(input):
-            self.input = input
-            self.lines = self.input.strip().split(self.eol)
+    def __init__(self, string_input):
+        if self.validate(string_input):
+            self.string_input = string_input
+            self.lines = self.string_input.strip().split(self.eol)
             #build out cuboid
             self.compute_characteristics()              
             self.generate_cube_space()
             self.place_mines()
         
     # stub validation
-    def validate(self, input):
+    def validate(self, string_input):
         # must be an odd number on x and y
         # all x lines must be same width
         # all y lines must be same width
@@ -31,11 +34,11 @@ class Cuboid:
     def compute_characteristics(self):        
 
         # get the set of mine characters
-        self.mine_chars = list(set(re.findall(r'[a-zA-Z]', self.input)))
+        self.mine_chars = list(set(re.findall(r'[a-zA-Z]', self.string_input)))
         
         # compute height and width
-        self.width = len(list(self.input.split()[0].strip()))
-        self.height = len(self.input.split(self.eol))
+        self.width = len(list(self.string_input.split()[0].strip()))
+        self.height = len(self.string_input.split(self.eol))
 
         #compute depth
         self.deepest_mine = reduce(lambda lowest,current: current
@@ -96,3 +99,28 @@ class Cuboid:
                                  if current[0][1] < lowest[0][1]
                                  else lowest, self.mines)
         return most_south_mine
+
+        
+    def render(self):
+        builder = StringIO()
+        for y in reversed(xrange(self.height)):
+            y_mines = [m for m in self.mines if m[0][1] == y]
+            for x in xrange(self.width):
+                xy_mine = next((m for m in y_mines if m[0][0] == x), None)
+                if xy_mine is not None:
+                    builder.write(xy_mine[1])
+                else:
+                    builder.write(".")
+            builder.write(self.eol)
+        matrix = builder.getvalue()
+        return matrix
+        
+
+    def __str__(self):
+        return self.render()
+        
+    def __repr__(self):
+        return self.__str__()
+    
+    def clone(self):
+        return deepcopy(self)
