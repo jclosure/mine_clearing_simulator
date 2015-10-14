@@ -35,6 +35,9 @@ Grid = grid.Grid
 
 class Simulation:
 
+    # static
+    eol = "\n"
+
     # file sentinals
     default_cuboid_file =  "./test_input/cuboid.dat"
     default_steps_file = "./test_input/student_minesweeping_script.steps"
@@ -55,7 +58,8 @@ class Simulation:
         self.initialize_cuboid()
         self.initialize_flight_plan()
         self.initialize_vessel()
-    
+
+        
     def engage(self):
 
         # run the sim:
@@ -66,6 +70,7 @@ class Simulation:
                                               self.step_inputs)
         # 2. output results to file
         self.print_output()    
+
         
     def step(self, step_input):
 
@@ -92,6 +97,7 @@ class Simulation:
         # collect all the good stuff
         return (step, self.vessel, last_cuboid, self.cuboid) 
 
+    
     def recompute_cuboid(self):
 
         cuboid_face = self.cuboid.render()
@@ -107,6 +113,7 @@ class Simulation:
                                    self.vessel.decent_level)
 
         print "----------- END STEP -----------------"
+
         
     def trim_face(self, face):
 
@@ -185,7 +192,8 @@ class Simulation:
         
         print "grown face: \n" + grown_face
         return face
-        
+
+    
     def initialize_vessel(self):
         
         # use the file to name our ship
@@ -194,7 +202,8 @@ class Simulation:
         # initialize vessel
         self.vessel = Vessel(ship_name)
         self.center_vessel()
-    
+
+        
     def initialize_flight_plan(self, step_inputs=None):
 
         if step_inputs is None:
@@ -207,18 +216,21 @@ class Simulation:
             #note we're going to pass in the script as a string here..
             self.step_inputs = step_inputs.read().split("\n")
 
+            
     def initialize_cuboid(self, cuboid_input=None, decent_rate=0, decent_level=0):
 
         # read inputs
         if cuboid_input is None:
-            self.cuboid_input = open(self.cuboid_file, "r").read()
+            self.field_input = open(self.cuboid_file, "r").read()
+            self.cuboid_input = self.field_input
         else:
             self.cuboid_input = cuboid_input
             
         print "initializing cuboid at decent_level: ", decent_level
         
         self.cuboid = Cuboid(self.cuboid_input, decent_rate * -1)
-           
+
+        
     def center_vessel(self):
 
         #set ship's coordinates to center of 2d plane at decent level on 3d plane
@@ -230,7 +242,6 @@ class Simulation:
         print "sited vessal at coordinates :" + str((self.vessel.x, self.vessel.y, self.vessel.z))
         
 
-    eol = "\n"
     def print_output(self):
         builder = StringIO()
 
@@ -243,8 +254,9 @@ class Simulation:
         builder.write(self.eol)
         builder.write(self.eol)
         
-        builder.write(self.cuboid_input)
+        builder.write(self.field_input)
 
+        builder.write(self.eol)
         builder.write(self.eol)
         
         # print cuboid file (field file)
@@ -304,14 +316,6 @@ class Simulation:
             output_file.write(output)
 
 
-            
-    def render_stack_frame(self, step, vessel, cuboid):
-        builder = StringIO()
-        builder.write("-------------")
-        builder.write(self.eol)
-        builder.write(cuboid.render())
-        builder.write(self.eol)
-        return builder.getvalue()
         
         
 
