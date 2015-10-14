@@ -1,5 +1,8 @@
 import sys
+import contextlib
 import ipdb
+import os
+from cStringIO import StringIO
 
 # our modules
 import cuboid
@@ -20,6 +23,7 @@ reload(cuboid)
 reload(step)
 reload(vessel)
 reload(grid)
+reload(computer)
 
 # our domain
 Cuboid = cuboid.Cuboid
@@ -58,7 +62,8 @@ class Simulation:
         self.history = self.history + map(lambda step_input:
                                               self.step(step_input),
                                               self.step_inputs)
-        
+       
+        self.spool_output()    
         
     def step(self, step_input):
 
@@ -76,11 +81,12 @@ class Simulation:
         # flash freeze and stash the universe
         last_cuboid = self.cuboid.clone()
 
-
-        
         # now recompute state
-        self.recompute_cuboid()
-
+        try:
+            self.recompute_cuboid()
+        except Exception as ex:
+            print ex
+            
         # collect all the good stuff
         return (step, self.vessel, last_cuboid, self.cuboid) 
 
@@ -156,6 +162,9 @@ class Simulation:
 
         if step_inputs is None:
             self.step_inputs = open(self.steps_file, "r").read().split("\n")
+            self.steps_file_output = self.steps_file+ ".out"
+            os.remove(self.steps_file_output) if os.path.exists(self.steps_file_output) else None
+  
         else:
             #note we're going to pass in the script as a string here..
             self.step_inputs = step_inputs.read().split("\n")
@@ -168,7 +177,6 @@ class Simulation:
         else:
             self.cuboid_input = cuboid_input
             
-        
         print "initializing cuboid at decent_level: ", decent_level
         
         self.cuboid = Cuboid(self.cuboid_input, decent_rate * -1)
@@ -184,6 +192,23 @@ class Simulation:
         print "sited vessal at coordinates :" + str((self.vessel.x, self.vessel.y, self.vessel.z))
         
 
-
-    def spool_output(self, output):
+    def spool_output(self):
+         # spit out the simulation results
+        with open(self.steps_file_output, 'a') as output_file:
+            initial = None
+            for stack_frame in self.history:
+                step, vessel, prev_cuboid, curr_cuboid = stack_frame
+                if initial is None:
+                    output_file.write(self.render_stack_frame(step, vessel, prev_cuboid))
+                    output_file.write(self.render_stack_frame(step, vessel, curr_cuboid))
+                    initial = True
+                else:
+                    output_file.write(self.render_stack_frame(step, vessel, curr_cuboid))
+        
+    def render_stack_frame(self, step, vessel, cuboid):
+        builder = StringIO()
+        builder.write("-------------")
+        builder.write(cuboid.render())
+        return builder.getvalue()
+        
         
