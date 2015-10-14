@@ -14,15 +14,32 @@ from lib import toolbox
 # run with py.test -s to see print statements
 # to run just this class: py.test -s test_computer.py::TestComputer
 
+
 import sys, os
+import yaml
+import imp
+from inspect import getsourcefile
+from os.path import abspath
+from os.path import dirname
+from os.path import join
+dir_path = abspath(join(dirname(getsourcefile(lambda:0))))
 
-from base_test import BaseTest
+# run all these tests automatically from repl
+def run():
+    import pytest
+    args_str = "-k test_computer"
+    pytest.main(args_str.split(" "))
 
-class TestComputer(BaseTest):
+# get a ts for running manually from repl
+def manual():
+    ts = TestSimulator()
+    ts.configure_simulator()
+    ts.setup_method("just_start_it_up")
+    return ts
 
+class TestComputer:
 
-    
-    def setUp(self):
+    def setup_method(self, test_method):
         exemplar1 = """..N..
                        .....
                        W...E
@@ -32,6 +49,9 @@ class TestComputer(BaseTest):
         self.cub = Cuboid(exemplar1)
         self.ves = Vessel("My Test Ship")
 
+    def teardown_method(self, test_method):
+        # tear down self.attribute
+        pass
 
     def test_chopping_rectangle_to_coordinates(self):
         cub = self.cub
@@ -95,28 +115,24 @@ class TestComputer(BaseTest):
         this(e2).should.be.equal((6, 0))
         #((0, -5), (6, 0))
 
-    # def test_push_out_rectangle(self):
-    #     point = (3, 2)
-    #     rect = (("west", 0),
-    #             ("east", 4),
-    #             ("south",0),
-    #             ("north",4))
+    def test_push_out_rectangle(self):
+        point = (3, 2)
+        rect = (("west", 0),
+                ("east", 4),
+                ("south",0),
+                ("north",4))
 
-    #     # test only x axis
-    #     pos = point[0] # x
-    #     ends = rect[0][1], rect[1][1] # west ---> east
+        # test only x axis
+        pos = point[0] # x
+        ends = rect[0][1], rect[1][1] # west ---> east
         
-    #     x_offsets = computer.get_center_offsets(ends, pos)
-    #     we, ee = x_offsets
-
-    #     offw = pos - we[1] + ends[0] 
-
-    #     this(offw).should.be.equal(
+        x_offsets = computer.get_center_offsets(ends, pos)
+        we, ee = x_offsets
         
-    #     # this(we).should.be.equal((0, 0))
-    #     # this(ee).should.be.equal((4, 3))
+        this(we).should.be.equal((0, 0))
+        this(ee).should.be.equal((4, 2))
         
-        
+    #todo: ...    
     def test_the_new_center_should_be_the_vessels_location(self):
         pass
 

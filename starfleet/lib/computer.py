@@ -56,7 +56,7 @@ def furthest_edge_from_point(rect, point):
 
 def get_center_offsets(ends, pos):
     le,he = ends
-        
+    
     ldif = abs(pos - le)
     hdif = abs(pos - he)
     
@@ -66,52 +66,12 @@ def get_center_offsets(ends, pos):
     elif ldif > hdif:
         offset = ldif - hdif
         return ((le, 0), (he, offset))
-    
+    else:
+        return (le, 0), (he, 0)
         
-    
-
-            
-
-
-def resize_cube_space(cuboid, vessel_coordinates):
-    vx,vy,vz = vessel_coordinates
-    
-    cx,cy = self.get_center(cur_cuboid.width,
-                            cur_cuboid.height)
-
-    ncenter = (vx, vy)
-    
-    # make new dotmap
-    cheight = cur_cuboid.height
-    cwidth = cur_cuboid.width
-
-    
-    # measure the distance between the vessel and the current 
-    
-    c_west_edge = 0
-    c_east_edge = cwidth - 1
-    c_south_edge = 0
-    c_north_edge = cheight - 1
-    
-    
-    cndiff = ('north_diff', ncenter - c_north_edge)
-    csdiff = ('south_diff',ncenter - c_south_edge)
-    cediff = ('east_diff', ncenter - c_east_edge)
-    cwdiff = ('west_diff', ncenter - c_west_edge)
-    
-    cdiffs = [cndiff,csdiff,cediff,cwdiff]
-    longest_cdiff = reduce(lambda highest,current: current
-                           if current > highest
-                           else highest, cdiffs)
-
-
-
     
 def get_center(self,width, height):
     # find cartesian center and decrement because we're zero indexed
     return (((width / 2)  + (width % 2)) - 1,
             ((height / 2) + (height % 2)) - 1)
 
-
-def run():
-    Simulation().engage()

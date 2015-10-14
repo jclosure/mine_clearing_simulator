@@ -94,8 +94,6 @@ class Simulation:
 
         cuboid_face = self.cuboid.render()
 
- 
-
         # adjusted face and dims
         cuboid_face = self.trim_face(cuboid_face)
        
@@ -161,24 +159,26 @@ class Simulation:
         # last = self.vessel.steps[-1]
         # if last and last.instructions == "south":
         #     ipdb.set_trace()
-     
+
+       
         vcoords = self.vessel.get_coordinates()
 
         xpos,ypos,zpos = vcoords
         
         # grow x
-
         ax_west, ax_east = computer.get_center_offsets(xends,xpos)
         
         # grow y
         ay_south, ay_north = computer.get_center_offsets(yends,xpos)
 
         g = Grid(face)
+        
 
-        g.grow_west(ax_west)
-        g.grow_east(ax_east)
-        g.grow_south(ay_south)
-        g.grow_north(ay_north)
+        # note: the second value in the tuple contains the adjustment
+        g.grow_west(ax_west[1])
+        g.grow_east(ax_east[1])
+        g.grow_south(ay_south[1])
+        g.grow_north(ay_north[1])
 
         grown_face = g.render()
         
@@ -251,3 +251,6 @@ class Simulation:
         return builder.getvalue()
         
         
+
+def run():
+    Simulation.engage()
