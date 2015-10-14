@@ -36,6 +36,92 @@ README.org document itself.
 
      #+END_EXAMPLE
 
+** Instructions
+
+Usage:
+
+*** linux
+
+long:
+
+=bin/simulator.sh --field path/of/field/file --script path/of/script/file=
+
+short:
+
+=bin/simulator.sh -f path/of/field/file --s path/of/script/file=
+
+*** windows
+
+long:
+
+=bin\similator.bat --field path\of\field\file -script path\of\script\file\=
+
+short:
+
+=bin/simulator.sh -f path\of\field\file -s path\of\script\file=
+
+for the lazy, you can cut and paste this:
+
+=bin\simulator.bat -f starfleet\tests\test_input\cuboid.dat -s starfleet\tests\test_input\student_minesweeping_script.steps=
+
+*** results
+
+The results file will be output in the same directory as the script
+file.  It will be named the same except that there will be a .out
+extension on it.  This file will be overwritten each time a simulation
+is run.
+
+*** test inputs
+
+There is a default directory with a set of test files you can use at
+this locations
+
+**** test script
+
+=starfleet/tests/test_input/student_minesweeping_script.steps=
+
+or: 
+
+=starfleet\tests\test_input\student_minesweeping_script.steps=
+
+**** test field
+
+=starfleet/tests/test_input/cuboid.dat=
+
+or 
+
+=starfleet\tests\test_input\cuboid.dat=
+
+*** unit tests
+
+There is a suite of tests that can be run with py.test from top level project dir.
+
+=py.text=
+
+**** there is a test coverage website built in.  
+
+You can find it under htmlcov directory.
+
+Run the coverage yourself with:
+
+=bin\test_coverage.bat=
+
+todo: make a .sh script for this.
+
+*** logging
+
+Currently the logs are buing output to the directory where the
+commands are executing.
+
+There are a bunch of diagnostics that I put out to console for the
+time being.  I'm still debugging and working on the core system, so it
+may look a bit crazy when you run it from the cli. 
+
+Just pick up the output file to see the clean results matching the
+format desired.
+
+
+
 ** Work in progress..
 
 *** working
@@ -81,8 +167,7 @@ argument options parser with defaults
 
 *** todo
 
-**** scoring
-print output correctly
+**** scoring (not implemented)
 better validations
 hit mine marking
 
@@ -119,11 +204,14 @@ domain responsibilities are cleanly segmented and appropriately placed
 ** publication 
 
 *** pdf
+
+todo:..
+
 *** html
 
-** similator program
-
-** test suite
+This readme is an executable emacs org file.  It can both run the code
+and be publised as HTML.  Github automatically understands .org files,
+so we'll use this document to start with.
 
 * Describe design
 
@@ -357,58 +445,48 @@ fall
 
 
 ****** step
+
+done
+
 ****** score
+
+todo:...
+
 ****** output
 
-***** services
+done
 
-behavior driver's for the simulation
 
-step_executor
-cuboid_computer
-move_executor
-score_computer
-input_validator
-input_parser
-output_computer
-firing_pattern_executor
-hit_computer
 
-*** output
-contains the step executor's results 
-**** output file
 
 
 ** composition
 
 **** cuboid
 
-contains a coordinate system of points
+contains 3d a coordinate system of points
 
 point's will be recomputed with each step
+
+**** grid
+
+in charge of face rendering and adjustment's to position
 
 **** vessel
 
 occupies a point (has a slot for a point)
 
-**** move
+**** step
 
-contains 2 point slots
+represent's an action performed by the simulator
 
-**** distance
+**** simulation
 
-is computed by evaluating the number of points (1km distance) between:
+the entry point for executing the simulation.
 
-vessel and mines
-vessel and edges of cuboid
+driver for input, execution, and output
 
-* Describe approach
+**** computer
 
-** Document and code along the way
-** Write tests for the rules
-*** use exemplar inputs for regression to verify correct outputs
-** Execute the similator from the org document
-** Produce final output
-** Publish to github
-** Submit work
-** Have a cup of tea and ruminate upon the exercise..
+hold's calculation logic for geometric positioning and navigation
+

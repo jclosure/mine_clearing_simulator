@@ -9,8 +9,8 @@ class Options:
     def _init_parser(self):
         usage = 'bin/project'
         self.parser = ArgumentParser(usage=usage)
-        self.parser.add_argument('-c',
-                                 '--cuboid',
+        self.parser.add_argument('-f',
+                                 '--field',
                                  default='cuboid.dat',
                                  dest='cuboid_file',
                                  help='This is the cuboid definition file')

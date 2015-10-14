@@ -273,8 +273,9 @@ class Simulation:
 
         ## body - print output
         
-        print "OUPUT:"
+        builder.write("OUPUT:")
 
+        builder.write(self.eol)
         builder.write(self.eol)
 
         for idx,stack_frame in enumerate(self.history):
@@ -315,7 +316,7 @@ class Simulation:
         with open(self.steps_file_output, 'a') as output_file:
             output_file.write(output)
 
-
+        print "\n\nOUTPUT FILE AVAILABLE AT: ", self.steps_file_output
         
         
 
