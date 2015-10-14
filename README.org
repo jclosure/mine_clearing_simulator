@@ -163,8 +163,196 @@ Just pick up the output file to see the clean results matching the
 format desired.
 
 
-
 ** Work in progress..
+
+The simulator program is currently under development.  It's basic
+engine is in place to handle falling through the cuboid, shooting
+mines, and redrawing the cuboid according to the rules.  This includes
+trimming the grid incrementally as mines are taken out and also
+keeping the space centered around the ship.
+
+Here is a successful run of the program in it's current state. 
+
+*** Example run
+
+Field file:
+
+#+BEGIN_EXAMPLE
+
+..N..
+.....
+W...E
+.....
+..S..
+      
+#+END_EXAMPLE
+
+Script file:
+
+#+BEGIN_EXAMPLE
+
+north
+delta south
+west
+gamma east
+east
+gamma west
+south
+delta
+      
+#+END_EXAMPLE
+
+
+Ouput file:
+
+#+BEGIN_EXAMPLE
+
+FIELD FILE:
+
+..N..
+.....
+W...E
+.....
+..S..
+
+SCRIPT FILE:
+
+north
+delta south
+west
+gamma east
+east
+gamma west
+south
+delta
+
+OUPUT:
+
+step 1
+
+north
+delta south
+west
+gamma east
+east
+gamma west
+south
+delta
+
+north
+
+..N..
+.....
+W...E
+.....
+..S..
+
+step 2
+
+..N..
+.....
+W...E
+.....
+..S..
+
+delta south
+
+.....
+.....
+V...D
+.....
+..R..
+
+step 3
+
+.....
+.....
+V...D
+.....
+..R..
+
+west
+
+U...C
+.....
+..Q..
+
+step 4
+
+U...C
+.....
+..Q..
+
+gamma east
+
+...
+...
+..B
+...
+P..
+
+step 5
+
+...
+...
+..B
+...
+P..
+
+east
+
+...
+...
+..A
+...
+O..
+
+step 6
+
+...
+...
+..A
+...
+O..
+
+gamma west
+
+.
+.
+.
+.
+N
+
+step 7
+
+.
+.
+.
+.
+N
+
+south
+
+.
+.
+M
+
+step 8
+
+.
+.
+M
+
+delta
+
+.
+
+
+pass/fail (stubbed)
+      
+#+END_EXAMPLE
+
+
 
 *** working
 
