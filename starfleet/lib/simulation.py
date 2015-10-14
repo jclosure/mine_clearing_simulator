@@ -58,12 +58,14 @@ class Simulation:
     
     def engage(self):
 
-        # map over the steps
+        # run the sim:
+        
+        # 1. map over the steps
         self.history = self.history + map(lambda step_input:
                                               self.step(step_input),
                                               self.step_inputs)
-       
-        self.spool_output()    
+        # 2. output results to file
+        self.print_output()    
         
     def step(self, step_input):
 
@@ -98,8 +100,7 @@ class Simulation:
         cuboid_face = self.trim_face(cuboid_face)
        
         # todo: trim calls grow
-
-
+        
         if cuboid_face:  
             self.initialize_cuboid(cuboid_face,
                                    self.vessel.decent_rate,
@@ -197,7 +198,8 @@ class Simulation:
     def initialize_flight_plan(self, step_inputs=None):
 
         if step_inputs is None:
-            self.step_inputs = open(self.steps_file, "r").read().split("\n")
+            self.script_input = open(self.steps_file, "r").read()
+            self.step_inputs = self.script_input.split("\n")
             self.steps_file_output = self.steps_file+ ".out"
             os.remove(self.steps_file_output) if os.path.exists(self.steps_file_output) else None
   
@@ -229,19 +231,80 @@ class Simulation:
         
 
     eol = "\n"
-    def spool_output(self):
-         # spit out the simulation results
-        with open(self.steps_file_output, 'a') as output_file:
-            initial = None
-            for stack_frame in self.history:
-                step, vessel, prev_cuboid, curr_cuboid = stack_frame
-                if initial is None:
-                    output_file.write(self.render_stack_frame(step, vessel, prev_cuboid))
-                    output_file.write(self.render_stack_frame(step, vessel, curr_cuboid))
-                    initial = True
-                else:
-                    output_file.write(self.render_stack_frame(step, vessel, curr_cuboid))
+    def print_output(self):
+        builder = StringIO()
+
+        ## header - print inputs
         
+        # print steps file (script file)
+
+        builder.write("FIELD FILE:")
+
+        builder.write(self.eol)
+        builder.write(self.eol)
+        
+        builder.write(self.cuboid_input)
+
+        builder.write(self.eol)
+        
+        # print cuboid file (field file)
+
+        builder.write("SCRIPT FILE:")
+
+        builder.write(self.eol)
+        builder.write(self.eol)
+        
+        builder.write(self.script_input)
+
+        builder.write(self.eol)
+        builder.write(self.eol)
+
+        ## body - print output
+        
+        print "OUPUT:"
+
+        builder.write(self.eol)
+
+        for idx,stack_frame in enumerate(self.history):
+
+            step, vessel, cur_cuboid, new_cuboid = stack_frame
+
+            # print step number
+            builder.write("step " + str(idx + 1) )
+            
+            builder.write(self.eol)
+            builder.write(self.eol)
+
+            # print current cuboid
+            builder.write(cur_cuboid.render())
+
+            builder.write(self.eol)
+            builder.write(self.eol)
+
+            # print instructions
+            builder.write(step.instructions)
+
+            builder.write(self.eol)
+            builder.write(self.eol)
+
+            # print result cuboid
+            builder.write(new_cuboid.render())
+
+            builder.write(self.eol)
+            builder.write(self.eol)
+
+        ## print fass/fail (score)
+        builder.write(self.eol)
+        builder.write("pass/fail (stubbed)")
+
+        # write it all out
+        output = builder.getvalue()
+        
+        with open(self.steps_file_output, 'a') as output_file:
+            output_file.write(output)
+
+
+            
     def render_stack_frame(self, step, vessel, cuboid):
         builder = StringIO()
         builder.write("-------------")
@@ -253,4 +316,4 @@ class Simulation:
         
 
 def run():
-    Simulation.engage()
+    Simulation().engage()
