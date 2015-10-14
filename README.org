@@ -510,8 +510,10 @@ next we'll get the steps that the student submitted to the simulator.
 
 ****** cuboid
 
-this is a data structure that represents our 3d coordinate system.
-here we will turn the string into a cubic data structure that will allow us the track the ships position as it steps through moves.
+a cuboid is our data structure that represents our 3d coordinate
+system.  you can print it and it will render it's 2d view for
+outputting.  here is a descriptive riff of the general mechanism
+behind the cuboid.
 
 #+name: build_cuboid
 #+header: :exports both
@@ -523,8 +525,6 @@ here we will turn the string into a cubic data structure that will allow us the 
                ...
                .Z. """
 
-  # stub validation
-
   # compute height and width
   width = len(list(cuboid.split()[0].strip()))
   height = len(cuboid.split("\n"))
@@ -534,16 +534,7 @@ here we will turn the string into a cubic data structure that will allow us the 
                                        range(ord('a'), ord('z')+1)] + [chr(c) for c in range(ord('A'), ord('Z')+1)])}
 
   #compute depth
-  import operator
   import re
-
-  # get the order of the values
-  ordered_z = sorted(z_map.items(), key=operator.itemgetter(1))
-
-  # show the ordered_z
-  for c,l in ordered_z:
-     z = z_map[c] - 1
-     print(c, z)
 
   # find the mines and order them from deepest to most shallow
   mine_chars = list(set(re.findall(r'[a-zA-Z]',cuboid)))
@@ -551,7 +542,6 @@ here we will turn the string into a cubic data structure that will allow us the 
   deepest_mine = reduce(lambda highest,current: current if z_map[current] > z_map[highest] else highest, mine_chars)
 
   depth = z_map[deepest_mine]
-
 
   # generate a cubic data structure of correct dimensions
   cube_space = [[['.' for z in range(depth)] 
@@ -617,10 +607,31 @@ upon the location of the ship and the mines
 #+RESULTS: recompute_xy_plane
 : None
 
-****** movement (z-1,[x,y,None])
+****** movement and firing patterns 
 
-movement within the cuboid corresponds to steps and is done with a
-z-axis fall and a potential move on either the x or y axes.
+movement within the cuboid corresponds done by lexing each string
+instruction to a map of lambdas.  this allows us to easily connect
+language to action in our system. 
+
+firing patterns are just tuples of 2d coordinate offsets.  they are
+assumed to go all the way to the bottom of the z-axis.
+
+#+BEGIN_SRC python
+
+decent_rate = 1
+
+navigation = (('north', lambda x,y: (x, y+1)),
+              ('south', lambda x,y: (x, y-1)),
+              ('east', lambda x,y: (x+1, y)),
+              ('west', lambda x,y: (x-1, y)))
+
+firing_patterns = (('alpha',((-1, -1), (-1, 1), (1, -1), (1, 1))),
+                   ('beta',((-1, 0), (0, -1), (0, 1), (1, 0))),
+                   ('gamma',((-1, 0), (0, 0), (1, 0))),
+                   ('delta',((0, -1), (0, 0), (0, 1))))
+
+
+#+END_SRC
 
 ****** distance
 
@@ -631,20 +642,6 @@ photon torpedo firing_patterns actually hit the mines
 
 there is a hit tracking mechanism that computes a hit based on
 distance, postion of points, and the firing pattern
-
-****** firing_pattern (alpha,beta,gama,delta)
-
-firing patterns are just tuples of 2d coordinates.  they are assumed
-to go all the way to the bottom of the z-axis.
-
-#+begin_src python
-
-  firing_patterns = [alpha = ((-1, -1), (-1, 1), (1, -1), (1, 1))
-                     beta = ((-1, 0), (0, -1), (0, 1), (1, 0))
-                     gamma = ((-1, 0), (0, 0), (1, 0))
-                     delta = ((0, -1), (0, 0), (0, 1))]
-
-#+end_src
 
 
 ****** vessel (ship)
@@ -658,25 +655,75 @@ firing_patterns
 
 behaviors:
 
+step
 fire
 move
-fall
+fall (happens on completion of a step)
 
 #+begin_src python
 
-  class Ship:
+ class Vessel(Entity):
 
-      firing_patterns = []
+    decent_rate = -1
+    
+    def __init__(self, name="Enterprise"):
+        self.name = name
+        # initialize defaults
+        self.decent_level = 0
+        self.x,self.y,self.z = 0,0,0
+        self.steps = []
+        
+    def step(self, step, cuboid):
+        print "running step: " + step.instructions
+        #run the step's operations
+        for operation in step.operations:
+            op,instruction,arg = operation
+            if op == "fire":
+                pattern = arg
+                step.hits = self.fire(pattern, cuboid, step)
+            if op == "move":
+                movement_calculator = arg[1]
+                x,y = movement_calculator(self.x,self.y)
+                self.move(x, y, cuboid)
+        self.steps.append(step)        
+        return step
+    
+    def fire(self, pattern, cuboid, step=None):
+        name, offsets = pattern
+        print "firing ", name, offsets
+        hits = [mine for mine in cuboid.mines
+                if self.hit_p(mine, offsets, cuboid)]
+        return hits
+         
+    def hit_p(self, mine, shots, cuboid):
+        ''' predicate to determine hits '''
+        mx,my,mz = mine[0]
+        for shot in shots:
+            ox, oy = shot
+            rx = self.x + ox
+            ry = self.y + oy
+            if rx == mx and ry == my:
+                return True
+        return False
+    
+    def move(self, x, y, cuboid):
+        print "moving ship to new coordinates"
+        self.decent_level = self.decent_level - decent_rate
+        self.x, self.y, self.z = x, y, self.decent_level
+        print "new coordinates: ", self.get_coordinates()
+        print "ship now at decent level: ", self.decent_level
 
-      def fire(self, pattern):
-        print "pyoo pyoo pyoo"
+    def get_coordinates(self):
+        return (self.x,self.y,self.z)
+
+    def render(self):
+        return self.name
+
 
 #+end_src
 
 
-****** step
 
-done
 
 ****** score
 
@@ -684,7 +731,7 @@ todo:...
 
 ****** output
 
-done
+todo...
 
 
 
