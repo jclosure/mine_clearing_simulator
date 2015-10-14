@@ -102,10 +102,10 @@ class Simulation:
         cuboid_face = self.grow_face(cuboid_face)
         print "grown face: \n" + cuboid_face
 
-       
-        self.initialize_cuboid(cuboid_face,
-                               self.vessel.decent_rate,
-                               self.vessel.decent_level)
+        if cuboid_face:  
+            self.initialize_cuboid(cuboid_face,
+                                   self.vessel.decent_rate,
+                                   self.vessel.decent_level)
 
         print "----------- END STEP -----------------"
         
@@ -143,6 +143,11 @@ class Simulation:
     
         new_face = g.render()
 
+        # lines = [line for line in new_face if len(line) > 0] 
+        # if not lines:
+        #     ipdb.set_trace()
+        #     raise Exception("WFT!!")
+        
         return new_face
 
     def grow_face(self, face):
@@ -192,6 +197,7 @@ class Simulation:
         print "sited vessal at coordinates :" + str((self.vessel.x, self.vessel.y, self.vessel.z))
         
 
+    eol = "\n"
     def spool_output(self):
          # spit out the simulation results
         with open(self.steps_file_output, 'a') as output_file:
@@ -208,7 +214,9 @@ class Simulation:
     def render_stack_frame(self, step, vessel, cuboid):
         builder = StringIO()
         builder.write("-------------")
+        builder.write(self.eol)
         builder.write(cuboid.render())
+        builder.write(self.eol)
         return builder.getvalue()
         
         
