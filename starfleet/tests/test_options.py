@@ -16,10 +16,10 @@ class TestCommandLineParameters(unittest.TestCase):
         self.assertEquals(opts.cuboid_file, self.cuboid_path)
 
     def test_options_example_is_set(self):
-        opts = self.options.parse(['-c', 'foobar'])
+        opts = self.options.parse(['-f', 'foobar'])
         self.assertEquals(opts.cuboid_file, 'foobar')
 
-        opts = self.options.parse(['--cuboid', 'not-a-foobar'])
+        opts = self.options.parse(['--field', 'not-a-foobar'])
         self.assertEquals(opts.cuboid_file, 'not-a-foobar')
 
 

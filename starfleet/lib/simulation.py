@@ -2,7 +2,7 @@ import sys
 import contextlib
 import ipdb
 import os
-from cStringIO import StringIO
+
 
 # our modules
 import cuboid
@@ -10,9 +10,13 @@ import grid
 import step
 import vessel
 import computer
+import scoring
+
 import logger
 import logging as log
 
+# for easy debugging in ipython, do this: %load_ext autoreload
+# we do this trick to turn off module caching for the REPL
 try:
     reload
 except NameError:
@@ -24,19 +28,16 @@ reload(step)
 reload(vessel)
 reload(grid)
 reload(computer)
+reload(scoring)
 
 # our domain
 Cuboid = cuboid.Cuboid
 Step = step.Step
 Vessel = vessel.Vessel
 Grid = grid.Grid
-
-# for easy debugging in ipython, do this: %load_ext autoreload
+Scoring = scoring.Scoring
 
 class Simulation:
-
-    # static
-    eol = "\n"
 
     # file sentinals
     default_cuboid_file =  "./test_input/cuboid.dat"
@@ -44,7 +45,7 @@ class Simulation:
     
     def __init__(self, cuboid_file=default_cuboid_file,steps_file=default_steps_file):
         log.info("creating new simulation")
-
+        
         # replay
         self.history = []
 
@@ -69,7 +70,11 @@ class Simulation:
                                               self.step(step_input),
                                               self.step_inputs)
         # 2. output results to file
-        self.print_output()    
+        
+        # keep score
+        score = Scoring(self)
+        score.compute_score()
+        score.print_output(self.steps_file_output)
 
         
     def step(self, step_input):
@@ -168,7 +173,6 @@ class Simulation:
         # if last and last.instructions == "south":
         #     ipdb.set_trace()
 
-       
         vcoords = self.vessel.get_coordinates()
 
         xpos,ypos,zpos = vcoords
@@ -181,7 +185,6 @@ class Simulation:
 
         g = Grid(face)
         
-
         # note: the second value in the tuple contains the adjustment
         g.grow_west(ax_west[1])
         g.grow_east(ax_east[1])
@@ -240,84 +243,9 @@ class Simulation:
         self.vessel.z = 0
         
         print "sited vessal at coordinates :" + str((self.vessel.x, self.vessel.y, self.vessel.z))
-        
 
-    def print_output(self):
-        builder = StringIO()
 
-        ## header - print inputs
-        
-        # print steps file (script file)
 
-        builder.write("FIELD FILE:")
-
-        builder.write(self.eol)
-        builder.write(self.eol)
-        
-        builder.write(self.field_input)
-
-        builder.write(self.eol)
-        builder.write(self.eol)
-        
-        # print cuboid file (field file)
-
-        builder.write("SCRIPT FILE:")
-
-        builder.write(self.eol)
-        builder.write(self.eol)
-        
-        builder.write(self.script_input)
-
-        builder.write(self.eol)
-        builder.write(self.eol)
-
-        ## body - print output
-        
-        builder.write("OUPUT:")
-
-        builder.write(self.eol)
-        builder.write(self.eol)
-
-        for idx,stack_frame in enumerate(self.history):
-
-            step, vessel, cur_cuboid, new_cuboid = stack_frame
-
-            # print step number
-            builder.write("step " + str(idx + 1) )
-            
-            builder.write(self.eol)
-            builder.write(self.eol)
-
-            # print current cuboid
-            builder.write(cur_cuboid.render())
-
-            builder.write(self.eol)
-            builder.write(self.eol)
-
-            # print instructions
-            builder.write(step.instructions)
-
-            builder.write(self.eol)
-            builder.write(self.eol)
-
-            # print result cuboid
-            builder.write(new_cuboid.render())
-
-            builder.write(self.eol)
-            builder.write(self.eol)
-
-        ## print fass/fail (score)
-        builder.write(self.eol)
-        builder.write("pass/fail (stubbed)")
-
-        # write it all out
-        output = builder.getvalue()
-        
-        with open(self.steps_file_output, 'a') as output_file:
-            output_file.write(output)
-
-        print "\n\nOUTPUT FILE AVAILABLE AT: ", self.steps_file_output
-        
         
 
 def run():

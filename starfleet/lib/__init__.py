@@ -9,6 +9,7 @@ import vessel
 import options
 import process
 import grid
+import scoring
 
 # singleton modules are not classes
 import toolbox
@@ -39,6 +40,6 @@ Step = step.Step
 Cuboid = cuboid.Cuboid
 Vessel = vessel.Vessel
 Grid = grid.Grid
-
+Scoring = scoring.Scoring
 
 
