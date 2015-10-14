@@ -30,12 +30,12 @@ def run():
     args_str = "-k test_computer"
     pytest.main(args_str.split(" "))
 
-# get a ts for running manually from repl
+# get a tester for running manually from repl
 def manual():
-    ts = TestSimulator()
-    ts.configure_simulator()
-    ts.setup_method("just_start_it_up")
-    return ts
+    tester = TestComputer()
+    tester.configure_simulator()
+    tester.setup_method("just_start_it_up")
+    return tester
 
 class TestComputer:
 

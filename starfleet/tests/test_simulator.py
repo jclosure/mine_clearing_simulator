@@ -79,10 +79,10 @@ class TestSimulator:
         #arrange
         sim = self.sim
         #act
-        step, vessel, ocuboid, ncuboid = sim.step("north")
-        this(step.hits).should.be.empty
-        step, vessel, ocuboid, ncuboid = sim.step("delta south")
-        this(step.hits).should_not.be.empty
+        vessel, step, nstep, ocuboid, ncuboid = sim.step("north")
+        this(nstep.hits).should.be.empty
+        vessel, step, nstep, ocuboid, ncuboid = sim.step("delta south")
+        this(nstep.hits).should_not.be.empty
         
 
     # def test_compute_new_state(self):
