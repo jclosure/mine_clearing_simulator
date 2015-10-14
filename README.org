@@ -44,25 +44,46 @@ Usage:
 
 long:
 
+#+BEGIN_EXAMPLE
+
 =bin/simulator.sh --field path/of/field/file --script path/of/script/file=
+      
+#+END_EXAMPLE
 
 short:
 
+
+#+BEGIN_EXAMPLE
+
 =bin/simulator.sh -f path/of/field/file --s path/of/script/file=
+      
+#+END_EXAMPLE
 
 *** windows
 
 long:
 
+#+BEGIN_EXAMPLE
+
 =bin\similator.bat --field path\of\field\file -script path\of\script\file\=
+      
+#+END_EXAMPLE
 
 short:
 
+#+BEGIN_EXAMPLE
+
 =bin/simulator.sh -f path\of\field\file -s path\of\script\file=
+      
+#+END_EXAMPLE
 
 for the lazy, you can cut and paste this:
 
+#+BEGIN_EXAMPLE
+
 =bin\simulator.bat -f starfleet\tests\test_input\cuboid.dat -s starfleet\tests\test_input\student_minesweeping_script.steps=
+      
+#+END_EXAMPLE
 
 *** results
 
@@ -77,12 +98,22 @@ There is a default directory with a set of test files you can use at
 this locations
 
 **** test script
+#+BEGIN_EXAMPLE
+
+=starfleet\tests\test_input\student_minesweeping_script.steps=
+      
+#+END_EXAMPLE
 
 =starfleet/tests/test_input/student_minesweeping_script.steps=
 
 or: 
 
+#+BEGIN_EXAMPLE
+
 =starfleet\tests\test_input\student_minesweeping_script.steps=
+      
+#+END_EXAMPLE
+
 
 **** test field
 
@@ -96,7 +127,12 @@ or
 
 There is a suite of tests that can be run with py.test from top level project dir.
 
+#+BEGIN_EXAMPLE
+
 =py.text=
+      
+#+END_EXAMPLE
+
 
 **** there is a test coverage website built in.  
 
