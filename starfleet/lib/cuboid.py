@@ -1,12 +1,12 @@
 
 
 import re
-from copy import deepcopy
 import ipdb
 from cStringIO import StringIO
 from operator import itemgetter, attrgetter, methodcaller
+from entity import Entity
 
-class Cuboid:
+class Cuboid(Entity):
 
     # trust me. this is sweet..
     z_map = {c:(i+1)*-1 for i,c in enumerate([chr(c) for c in range(ord('a'), ord('z')+1)] + [chr(c) for c in range(ord('A'), ord('Z')+1)])}
@@ -172,14 +172,7 @@ class Cuboid:
         return matrix
         
 
-    def __str__(self):
-        return self.render()
-        
-    def __repr__(self):
-        return self.__str__()
-    
-    def clone(self):
-        return deepcopy(self)
+
 
 
 ##### CUBOID EXCEPTIONS #####

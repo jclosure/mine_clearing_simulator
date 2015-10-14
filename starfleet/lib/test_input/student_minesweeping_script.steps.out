@@ -1,0 +1,111 @@
+FIELD FILE:
+
+..N..
+.....
+W...E
+.....
+..S..
+
+SCRIPT FILE:
+
+north
+delta south
+west
+gamma east
+east
+gamma west
+south
+delta
+
+OUPUT:
+
+step 1
+
+north
+
+..N..
+.....
+W...E
+.....
+..S..
+
+step 2
+
+V...D
+.....
+..R..
+
+delta south
+
+V...D
+.....
+..R..
+
+step 3
+
+U...C
+.....
+..Q..
+
+west
+
+U...C
+.....
+..Q..
+
+step 4
+
+..B
+...
+P..
+
+gamma east
+
+..B
+...
+P..
+
+step 5
+
+..A
+...
+O..
+
+east
+
+..A
+...
+O..
+
+step 6
+
+.
+.
+N
+
+gamma west
+
+.
+.
+N
+
+step 7
+
+.
+M
+
+south
+
+.
+M
+
+step 8
+
+.
+
+delta
+
+.
+
+
+pass/fail (stubbed)

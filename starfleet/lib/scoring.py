@@ -70,7 +70,7 @@ class Scoring:
 
         for idx,stack_frame in enumerate(self.sim.history):
 
-            step, vessel, cur_cuboid, new_cuboid = stack_frame
+            vessel, prev_step, step, prev_cuboid, cuboid = stack_frame
 
             # print step number
             builder.write("step " + str(idx + 1) )
@@ -78,11 +78,12 @@ class Scoring:
             builder.write(self.eol)
             builder.write(self.eol)
 
-            # print current cuboid
-            builder.write(cur_cuboid.render())
+            # print prev step's grid
+            if prev_step:
+                builder.write(step.grid.render())
 
-            builder.write(self.eol)
-            builder.write(self.eol)
+                builder.write(self.eol)
+                builder.write(self.eol)
 
             # print instructions
             builder.write(step.instructions)
@@ -91,7 +92,7 @@ class Scoring:
             builder.write(self.eol)
 
             # print result cuboid
-            builder.write(new_cuboid.render())
+            builder.write(step.grid.render())
 
             builder.write(self.eol)
             builder.write(self.eol)

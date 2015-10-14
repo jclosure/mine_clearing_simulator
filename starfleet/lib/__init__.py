@@ -10,6 +10,7 @@ import options
 import process
 import grid
 import scoring
+import entity
 
 # singleton modules are not classes
 import toolbox
@@ -31,6 +32,15 @@ try:
 except KeyError:
     import test_shim as test_shim
 
+
+reload(cuboid)
+reload(step)
+reload(vessel)
+reload(grid)
+reload(computer)
+reload(scoring)
+reload(entity)
+    
 # domain class constant's are exposed from the "lib" module's api
 Process = process.Process
 ProcessException = process.ProcessException
@@ -41,5 +51,5 @@ Cuboid = cuboid.Cuboid
 Vessel = vessel.Vessel
 Grid = grid.Grid
 Scoring = scoring.Scoring
-
+Entity = entity.Entity
 

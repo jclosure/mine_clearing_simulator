@@ -1,7 +1,8 @@
 from step import Step
 from affordances import decent_rate
+from entity import Entity
 
-class Vessel:
+class Vessel(Entity):
 
     decent_rate = decent_rate
     
@@ -55,3 +56,5 @@ class Vessel:
     def get_coordinates(self):
         return (self.x,self.y,self.z)
 
+    def render(self):
+        return self.name

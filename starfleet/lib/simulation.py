@@ -48,6 +48,7 @@ class Simulation:
         
         # replay
         self.history = []
+        self.steps = []
 
         # pre-declare lazy file slots
         self.cuboid_file = cuboid_file
@@ -75,7 +76,6 @@ class Simulation:
         score = Scoring(self)
         score.compute_score()
         score.print_output(self.steps_file_output)
-
         
     def step(self, step_input):
 
@@ -83,6 +83,8 @@ class Simulation:
         
         # create step operations
         step = Step(step_input)
+
+        
         
         # ship operates in cuboid
         self.vessel.step(step, self.cuboid)
@@ -91,24 +93,33 @@ class Simulation:
         self.cuboid.sweep_mines(step.hits)
 
         # flash freeze and stash the universe
-        last_cuboid = self.cuboid.clone()
+        prev_cuboid = self.cuboid.clone()
 
         # now recompute state
         try:
-            self.recompute_cuboid()
+            self.recompute_cuboid(step)
         except Exception as ex:
             print ex
             
         # collect all the good stuff
-        return (step, self.vessel, last_cuboid, self.cuboid) 
-
+        prev_step = [s for s in reversed((self.steps or [None]))][0]
+        event_data = (self.vessel.clone(),
+                      prev_step,
+                      step,
+                      prev_cuboid,
+                      self.cuboid)
+        
+        self.steps.append(step)
+        
+        return event_data
+        
     
-    def recompute_cuboid(self):
+    def recompute_cuboid(self, step):
 
         cuboid_face = self.cuboid.render()
 
-        # adjusted face and dims
-        cuboid_face = self.trim_face(cuboid_face)
+        # attach adjusted face and dims to step
+        step.grid = self.trim_grid(cuboid_face)
        
         # todo: trim calls grow
         
@@ -120,7 +131,7 @@ class Simulation:
         print "----------- END STEP -----------------"
 
         
-    def trim_face(self, face):
+    def trim_grid(self, face):
 
         ## this is here to enable breaking on a specific step during debugging
         # last = self.vessel.steps[-1]
@@ -147,7 +158,7 @@ class Simulation:
         northern_offset = abs(g.height - 1 - north_edge[1])
         southern_offset = abs(0 - south_edge[1])
 
-        print "OFFSETS: ", western_offset, eastern_offset, northern_offset, southern_offset
+        print "TRIM OFFSETS:", "west:", western_offset, "east:", eastern_offset, "north:", northern_offset, "south:", southern_offset
         
         g.shrink_west(western_offset)
         g.shrink_east(eastern_offset)
@@ -158,43 +169,13 @@ class Simulation:
 
         print "trimmed face: \n" + trimmed_face
 
-        # now grow:
-        xends = (west_edge[1], east_edge[1])
-        yends = (south_edge[1], north_edge[1])
+        # # now grow:
+        # xends = (west_edge[1], east_edge[1])
+        # yends = (south_edge[1], north_edge[1])
     
-        return self.grow_face(trimmed_face, xends, yends) 
+        # return self.grow_face(trimmed_face, xends, yends) 
         
-        
-
-    def grow_face(self, face, xends, yends):
-
-        ## this is here to enable breaking on a specific step during debugging
-        # last = self.vessel.steps[-1]
-        # if last and last.instructions == "south":
-        #     ipdb.set_trace()
-
-        vcoords = self.vessel.get_coordinates()
-
-        xpos,ypos,zpos = vcoords
-        
-        # grow x
-        ax_west, ax_east = computer.get_center_offsets(xends,xpos)
-        
-        # grow y
-        ay_south, ay_north = computer.get_center_offsets(yends,xpos)
-
-        g = Grid(face)
-        
-        # note: the second value in the tuple contains the adjustment
-        g.grow_west(ax_west[1])
-        g.grow_east(ax_east[1])
-        g.grow_south(ay_south[1])
-        g.grow_north(ay_north[1])
-
-        grown_face = g.render()
-        
-        print "grown face: \n" + grown_face
-        return face
+        return g
 
     
     def initialize_vessel(self):
