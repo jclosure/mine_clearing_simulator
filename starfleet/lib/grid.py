@@ -70,16 +70,9 @@ class Grid(Entity):
                            range(len(self.matrix[0])))]
                 self.matrix = self.matrix + row
                 
-    def grow_face(self, face, xends, yends):
+    def grow_face(self, face, xends, yends, vcoords):
 
-        ## this is here to enable breaking on a specific step during debugging
-        # last = self.vessel.steps[-1]
-        # if last and last.instructions == "south":
-        #     ipdb.set_trace()
-
-        vcoords = self.vessel.get_coordinates()
-
-        xpos,ypos,zpos = vcoords
+        xpos, ypos = vcoords
         
         # grow x
         ax_west, ax_east = computer.get_center_offsets(xends,xpos)
@@ -102,8 +95,7 @@ class Grid(Entity):
 
         grown_face = g.render()
         
-        print "grown face: \n" + grown_face
-        return face
+        return grown_face
 
     def render(self):
         builder = StringIO()

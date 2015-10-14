@@ -80,7 +80,7 @@ class Scoring:
 
             # print prev step's grid
             if prev_step:
-                builder.write(prev_step.grid.render())
+                builder.write(prev_step.grown_face)
             else:
                 builder.write(self.sim.script_input)
 
@@ -94,7 +94,7 @@ class Scoring:
             builder.write(self.eol)
 
             # print result cuboid
-            builder.write(step.grid.render())
+            builder.write(step.grown_face)
 
             builder.write(self.eol)
             builder.write(self.eol)

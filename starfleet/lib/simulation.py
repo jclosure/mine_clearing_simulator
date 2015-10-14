@@ -79,7 +79,7 @@ class Simulation:
         
     def step(self, step_input):
 
-        prev_step = [s for s in reversed((self.steps or [None]))][0]
+        
         
         print "----------- START STEP -----------------"
         
@@ -105,7 +105,7 @@ class Simulation:
             print ex
             
         # collect all the good stuff
-        
+        prev_step = [s for s in reversed((self.steps or [None]))][0]
         event_data = (self.vessel.clone(),
                       prev_step,
                       step,
@@ -125,10 +125,12 @@ class Simulation:
 
         # attach adjusted face and dims to step
         
-        step.grid = self.trim_grid(cuboid_face)
+        step.untrimmed_face = cuboid_face
+        step.trimmed_face, step.grown_face = self.generate_faces(cuboid_face)
        
-        #print "UNTRIMMED: ",  cuboid_face
-       
+        print "UNTRIMMED: \n",  cuboid_face
+
+        
         
         if cuboid_face:  
             self.initialize_cuboid(self.cuboid.render(),
@@ -139,7 +141,7 @@ class Simulation:
 
         
     
-    def trim_grid(self, face):
+    def generate_faces(self, face):
 
         ## this is here to enable breaking on a specific step during debugging
         # last = self.vessel.steps[-1]
@@ -172,16 +174,26 @@ class Simulation:
         g.shrink_south(southern_offset)
     
         trimmed_face =  g.render()
-
-        print "trimmed face: \n" + trimmed_face
+        print "TRIMMED: \n", trimmed_face
 
         # # now grow:
-        # xends = (west_edge[1], east_edge[1])
-        # yends = (south_edge[1], north_edge[1])
-    
-        # return self.grow_face(trimmed_face, xends, yends) 
+        xends = (west_edge[1], east_edge[1])
+        yends = (south_edge[1], north_edge[1])
+
+        ## this is here to enable breaking on a specific step during debugging
+        # last = self.vessel.steps[-1]
+        # if last and last.instructions == "south":
+        #     ipdb.set_trace()
+
+        # get the vessel coords for growing face
+        vcoords = self.vessel.get_coordinates()
+        xpos,ypos,zpos = vcoords
         
-        return g
+        grown_face = g.grow_face(trimmed_face, xends, yends, (xpos, ypos)) 
+
+        print "GROWN: \n", grown_face
+        
+        return (trimmed_face, grown_face)
 
     
     def initialize_vessel(self):
