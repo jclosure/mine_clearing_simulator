@@ -519,44 +519,46 @@ behind the cuboid.
 #+header: :exports both
 #+begin_src python
 
-  cuboid = """ .Z.
-               ...
-               Z.Z
-               ...
-               .Z. """
+          cuboid = """ .Z.
+                       ...
+                       Z.Z
+                       ...
+                       .Z. """
 
-  # compute height and width
-  width = len(list(cuboid.split()[0].strip()))
-  height = len(cuboid.split("\n"))
+          # compute height and width
+          width = len(list(cuboid.split()[0].strip()))
+          height = len(cuboid.split("\n"))
 
-  # build a mapping char to value
-  z_map = {c:i+1 for i,c in enumerate([chr(c) for c in 
-                                       range(ord('a'), ord('z')+1)] + [chr(c) for c in range(ord('A'), ord('Z')+1)])}
+          # build a mapping char to value
+          z_map = {c:i+1 for i,c 
+                   in enumerate([chr(c) 
+                                 for c in range(ord('a'), ord('z')+1)] + [chr(c) 
+                                                                          for c in range(ord('A'), ord('Z')+1)])}
 
-  #compute depth
-  import re
+          #compute depth
+          import re
 
-  # find the mines and order them from deepest to most shallow
-  mine_chars = list(set(re.findall(r'[a-zA-Z]',cuboid)))
+          # find the mines and order them from deepest to most shallow
+          mine_chars = list(set(re.findall(r'[a-zA-Z]',cuboid)))
 
-  deepest_mine = reduce(lambda highest,current: current if z_map[current] > z_map[highest] else highest, mine_chars)
+          deepest_mine = reduce(lambda highest,current: current if z_map[current] > z_map[highest] else highest, mine_chars)
 
-  depth = z_map[deepest_mine]
+          depth = z_map[deepest_mine]
 
-  # generate a cubic data structure of correct dimensions
-  cube_space = [[['.' for z in range(depth)] 
-                 for y in range(height)] 
-                for x in range(width)]
+          # generate a cubic data structure of correct dimensions
+          cube_space = [[['.' for z in range(depth)] 
+                         for y in range(height)] 
+                        for x in range(width)]
 
-  # compute the mine coordinates in cubic space
-  for y,line in enumerate(cuboid.strip().split("\n")):
-     for x,char in enumerate(list(line.strip())):
-        if char in mine_chars:
-           z = z_map[char]-1
-           cube_space[x][y][z] = char
-           print(x,y,z)
+          # compute the mine coordinates in cubic space
+          for y,line in enumerate(cuboid.strip().split("\n")):
+             for x,char in enumerate(list(line.strip())):
+                if char in mine_chars:
+                   z = z_map[char]-1
+                   cube_space[x][y][z] = char
+                   print(x,y,z)
 
-  return cube_space     
+          return cube_space     
 
 #+end_src
 
@@ -766,4 +768,10 @@ driver for input, execution, and output
 **** computer
 
 hold's calculation logic for geometric positioning and navigation
+
+**** scoring
+
+calulate's the results of the simulation's runs
+
+also, prints out the results formatted file 
 
