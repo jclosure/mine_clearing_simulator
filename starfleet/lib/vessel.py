@@ -10,10 +10,10 @@ class Vessel:
         # initialize defaults
         self.decent_level = 0
         self.x,self.y,self.z = 0,0,0
+        self.steps = []
         
     def step(self, step, cuboid):
         print "running step: " + step.instructions
-        
         #run the step's operations
         for operation in step.operations:
             op,instruction,arg = operation
@@ -24,7 +24,7 @@ class Vessel:
                 movement_calculator = arg[1]
                 x,y = movement_calculator(self.x,self.y)
                 self.move(x, y, cuboid)
-                
+        self.steps.append(step)        
         return step
     
     def fire(self, pattern, cuboid, step=None):
@@ -49,7 +49,8 @@ class Vessel:
         print "moving ship to new coordinates"
         self.decent_level = self.decent_level - decent_rate
         self.x, self.y, self.z = x, y, self.decent_level
-        print "new coordinates ", self.get_coordinates()
+        print "new coordinates: ", self.get_coordinates()
+        print "ship now at decent level: ", self.decent_level
 
     def get_coordinates(self):
         return (self.x,self.y,self.z)

@@ -1,4 +1,5 @@
 import ipdb
+from copy import deepcopy
 from cStringIO import StringIO
 
 class Grid:
@@ -14,49 +15,45 @@ class Grid:
         self.width =  next((len(r) for r in self.matrix), 0)
         
     # section: shrinking operations
-
-    def valid_resize(self, num):
+    def valid(self, num):
         return num > 0
+  
     
     def shrink_west(self, num):
-        if self.valid_resize(num):
+        if self.valid(num):
             self.matrix = map(lambda row: row[num:], self.matrix)
 
     def shrink_east(self, num):
-        if self.valid_resize(num):
+        if self.valid(num):
             self.matrix = map(lambda row: row[:-1*num], self.matrix)
             
     def shrink_north(self, num):
-        if self.valid_resize(num):
+        if self.valid(num):
             self.matrix = self.matrix[num:]
 
     def shrink_south(self, num):
-        if self.valid_resize(num):
+        if self.valid(num):
             self.matrix = self.matrix[:-1*num]
 
     # section: growth operations
         
     def grow_west(self, num):
-        if self.valid_resize(num):
             for i in range(num):
                 for row in self.matrix:
                     row[:0] = "."
         
     def grow_east(self, num):
-        if self.valid_resize(num):
             for i in range(num):
                 for row in self.matrix:
                     row.append(".")
 
     def grow_north(self, num):
-        if self.valid_resize(num):
             for i in range(num):
                 row = [map(lambda col: ".",
                            range(len(self.matrix[0])))]
                 self.matrix[:0] = row
 
     def grow_south(self, num):
-        if self.valid_resize(num):
             for i in range(num):
                 row = [map(lambda col: ".",
                            range(len(self.matrix[0])))]
@@ -79,3 +76,6 @@ class Grid:
     def __repr__(self):
         return self.__str__()
     
+    
+    def clone(self):
+        return deepcopy(self)

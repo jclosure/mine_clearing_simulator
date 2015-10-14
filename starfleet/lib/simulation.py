@@ -94,13 +94,13 @@ class Simulation:
 
         cuboid_face = self.cuboid.render()
 
-        print "untrimmed face: \n" + cuboid_face
+ 
 
+        # adjusted face and dims
         cuboid_face = self.trim_face(cuboid_face)
-        print "trimmed face: \n" + cuboid_face
+       
+        # todo: trim calls grow
 
-        cuboid_face = self.grow_face(cuboid_face)
-        print "grown face: \n" + cuboid_face
 
         if cuboid_face:  
             self.initialize_cuboid(cuboid_face,
@@ -111,6 +111,11 @@ class Simulation:
         
     def trim_face(self, face):
 
+        ## this is here to enable breaking on a specific step during debugging
+        # last = self.vessel.steps[-1]
+        # if last and last.instructions == "south":
+        #     ipdb.set_trace()
+        
          # get all mine coords
         mine_coords = [mine[0] for mine in self.cuboid.mines]
         # add the ship's coords
@@ -118,40 +123,66 @@ class Simulation:
 
         print "OBJECT COORDS: ", coords
 
+
+
         west_edge, east_edge, south_edge, north_edge = computer.smallest_rectangle(coords)
 
         print "EDGES: ",  west_edge, east_edge, south_edge, north_edge
         
         g = Grid(face)
-
-        western_offset = abs(west_edge[1])
-        eastern_offset = abs(g.width - east_edge[1] - 1)
-        northern_offset = abs(g.height - north_edge[1] - 1)
-        southern_offset = abs(south_edge[1])
+        
+        western_offset = abs(0 - west_edge[1])
+        eastern_offset =  abs(g.width - 1 - east_edge[1])
+        northern_offset = abs(g.height - 1 - north_edge[1])
+        southern_offset = abs(0 - south_edge[1])
 
         print "OFFSETS: ", western_offset, eastern_offset, northern_offset, southern_offset
-
-        # GOOD
-        g.shrink_west(western_offset)
-  
-        g.shrink_east(eastern_offset)
-  
-        g.shrink_north(northern_offset)
-   
-        # todo: ...
-        # g.shrink_south(southern_offset)
-    
-        new_face = g.render()
-
-        # lines = [line for line in new_face if len(line) > 0] 
-        # if not lines:
-        #     ipdb.set_trace()
-        #     raise Exception("WFT!!")
         
-        return new_face
+        g.shrink_west(western_offset)
+        g.shrink_east(eastern_offset)
+        g.shrink_north(northern_offset)
+        g.shrink_south(southern_offset)
+    
+        trimmed_face =  g.render()
 
-    def grow_face(self, face):
-        #todo: ..
+        print "trimmed face: \n" + trimmed_face
+
+        # now grow:
+        xends = (west_edge[1], east_edge[1])
+        yends = (south_edge[1], north_edge[1])
+    
+        return self.grow_face(trimmed_face, xends, yends) 
+        
+        
+
+    def grow_face(self, face, xends, yends):
+
+        ## this is here to enable breaking on a specific step during debugging
+        # last = self.vessel.steps[-1]
+        # if last and last.instructions == "south":
+        #     ipdb.set_trace()
+     
+        vcoords = self.vessel.get_coordinates()
+
+        xpos,ypos,zpos = vcoords
+        
+        # grow x
+
+        ax_west, ax_east = computer.get_center_offsets(xends,xpos)
+        
+        # grow y
+        ay_south, ay_north = computer.get_center_offsets(yends,xpos)
+
+        g = Grid(face)
+
+        g.grow_west(ax_west)
+        g.grow_east(ax_east)
+        g.grow_south(ay_south)
+        g.grow_north(ay_north)
+
+        grown_face = g.render()
+        
+        print "grown face: \n" + grown_face
         return face
         
     def initialize_vessel(self):

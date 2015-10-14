@@ -7,7 +7,12 @@ import ipdb
 # 3. offset remaining 3 edges ensuring that length
 
 
-def smallest_rectangle(coords):   
+def smallest_rectangle(coords):
+    # if len(coords) > 4:
+    #     pad = 4 - len(coords)
+    #     for i in range(pad):
+    #         coords.append((0,0)) # we need at least 4 points for rectangles
+    
     xs = [c[0] for c in coords]
     ys = [c[1] for c in coords]
 
@@ -107,3 +112,6 @@ def get_center(self,width, height):
     return (((width / 2)  + (width % 2)) - 1,
             ((height / 2) + (height % 2)) - 1)
 
+
+def run():
+    Simulation().engage()
