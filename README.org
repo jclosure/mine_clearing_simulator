@@ -8,69 +8,105 @@ executable code using emacs org-mode babel, which provides the means to both
 document and run essential pieces of the similator's code inside this
 README.org document itself.
 
+ #+BEGIN_EXAMPLE
+
+         /\
+        |==|
+        |  |
+        |  |
+        |  |
+       /____\
+       |    |
+       |Joel|
+       |  IX|
+       |    |
+      /| |  |\
+     / | |  | \
+    /__|_|__|__\
+       /_\/_\
+       ######
+      ########
+       ######
+        ####
+        ####
+         ##
+         ##   
+         ##
+         ##
+
+     #+END_EXAMPLE
+
 ** Work in progress..
 
 *** working
 
 **** cuboid
-***** mine layout
-***** coordinate system
-***** rendering
+
+mine layout
+coordinate system
+rendering
+
 **** vessel
-***** step execution
-***** navigation and targeting
-***** firing
+
+step execution
+navigation
+targeting 
+firiing
+decent
+
 **** step
-***** parsing and lexing instructions
-***** hit tracking
+parsing and lexing instructions
+hit tracking
 **** computer
 ***** calculations
-****** smallest rectangle
-****** relative ship centering on dimensions
+smallest rectangle
+relative ship centering on dimensions
 **** grid
-***** shrinking and growing face
-***** rendering
+shrinking and growing face
+rendering
 **** simulator
-***** execution of steps
-***** state machine
+execution of steps
+state machine
 **** test suite
 ***** unit test suite can be run with py.test
-****** fluent expectation based tests
+fluent expectation based tests
 ***** test coverage reports in html
-****** builds website
+builds website
 **** facilities
-***** command line execution scripts for both linux and windows
-***** argument options parser with defaults
+command line execution scripts for both linux and windows
+argument options parser with defaults
 ***** logger
 ****** output to local files, seperating info from errors
-****** configured with local yaml file
+****** configured with local yaml file 
 
 *** todo
 
-*** scoring
-**** print output correctly
-**** better validations
-**** hit mine marking
-**** NEED TO PUT IN MODULE DEPS INTO SETUP.PY
-***** as it is, you'll have to figure out based on what breaks
+**** scoring
+print output correctly
+better validations
+hit mine marking
+
+NEED TO PUT IN MODULE DEPS INTO SETUP.PY
+as it is, you'll have to figure out based on what breaks
+
 
 *** known issues
 
 **** there's a bug with shrininking and growing of space around the ship.
-***** should be fixed by tweaking the simulation.recomput_cuboid() method
+should be fixed by tweaking the simulation.recomput_cuboid() method
 
 *** status
 
-**** I'm close, but would like to continue work on the system to knock out the remaining features.
-**** If you want to go ahead and begin evaluating the system, please go forward.
+I'm close, but would like to continue work on the system to knock out the remaining features.
+If you want to go ahead and begin evaluating the system, please go forward.
 
 *** notables
 
-**** lots of comprehension and lambda kung-fu for general purpose algorithms
-**** liberal use of generator streams and map,reduce,filtration
-**** pythonic functional idioms preferred over imperatives
-**** test-driven design methodology followed
-**** domain responsibilities are cleanly segmented and appropriately placed
+lots of comprehension and lambda kung-fu for general purpose algorithms
+liberal use of generator streams and map,reduce,filtration
+pythonic functional idioms preferred over imperatives
+test-driven design methodology followed
+domain responsibilities are cleanly segmented and appropriately placed
 **** developed with:
 ***** emacs
 ***** ipython
@@ -294,34 +330,6 @@ to go all the way to the bottom of the z-axis.
 
 
 ****** vessel (ship)
-
- #+BEGIN_EXAMPLE
-
-         /\
-        |==|
-        |  |
-        |  |
-        |  |
-       /____\
-       |    |
-       |Joel|
-       |  IX|
-       |    |
-      /| |  |\
-     / | |  | \
-    /__|_|__|__\
-       /_\/_\
-       ######
-      ########
-       ######
-        ####
-        ####
-         ##
-         ##   
-         ##
-         ##
-
-     #+END_EXAMPLE
 
 the ship will have characteristics and behaviors.
 
