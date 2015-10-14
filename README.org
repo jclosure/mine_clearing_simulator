@@ -46,7 +46,7 @@ long:
 
 #+BEGIN_EXAMPLE
 
-=bin/simulator.sh --field path/of/field/file --script path/of/script/file=
+bin/simulator.sh --field path/of/field/file --script path/of/script/file
       
 #+END_EXAMPLE
 
@@ -55,7 +55,15 @@ short:
 
 #+BEGIN_EXAMPLE
 
-=bin/simulator.sh -f path/of/field/file --s path/of/script/file=
+bin/simulator.sh -f path/of/field/file --s path/of/script/file
+      
+#+END_EXAMPLE
+
+example:
+
+#+BEGIN_EXAMPLE
+
+bin/simulator.sh -f starfleet/tests/test_input/cuboid.dat -s starfleet/tests/test_input/student_minesweeping_script.steps
       
 #+END_EXAMPLE
 
@@ -65,7 +73,7 @@ long:
 
 #+BEGIN_EXAMPLE
 
-=bin\similator.bat --field path\of\field\file -script path\of\script\file\=
+bin\similator.bat --field path\of\field\file -script path\of\script\file\
       
 #+END_EXAMPLE
 
@@ -73,15 +81,15 @@ short:
 
 #+BEGIN_EXAMPLE
 
-=bin/simulator.sh -f path\of\field\file -s path\of\script\file=
+bin/simulator.sh -f path\of\field\file -s path\of\script\file
       
 #+END_EXAMPLE
 
-for the lazy, you can cut and paste this:
+example:
 
 #+BEGIN_EXAMPLE
 
-=bin\simulator.bat -f starfleet\tests\test_input\cuboid.dat -s starfleet\tests\test_input\student_minesweeping_script.steps=
+bin\simulator.bat -f starfleet\tests\test_input\cuboid.dat -s starfleet\tests\test_input\student_minesweeping_script.steps
       
 #+END_EXAMPLE
 
@@ -100,17 +108,15 @@ this locations
 **** test script
 #+BEGIN_EXAMPLE
 
-=starfleet\tests\test_input\student_minesweeping_script.steps=
+starfleet/tests/test_input/student_minesweeping_script.steps
       
 #+END_EXAMPLE
-
-=starfleet/tests/test_input/student_minesweeping_script.steps=
 
 or: 
 
 #+BEGIN_EXAMPLE
 
-=starfleet\tests\test_input\student_minesweeping_script.steps=
+starfleet\tests\test_input\student_minesweeping_script.steps
       
 #+END_EXAMPLE
 
@@ -129,7 +135,7 @@ There is a suite of tests that can be run with py.test from top level project di
 
 #+BEGIN_EXAMPLE
 
-=py.text=
+$ py.text
       
 #+END_EXAMPLE
 
