@@ -118,10 +118,6 @@ class Cuboid(Entity):
             self.mines = [m for m
                           in self.mines
                       if not coords == m[0]]
-        
-    def recompute_space(self, coordinates):
-        x,y,z = coordinates
-        ipdb.set_trace()
 
     def get_central_coordinates(self):
         # find cartesian center and decrement because we're zero indexed

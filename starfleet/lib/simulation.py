@@ -79,19 +79,22 @@ class Simulation:
         
     def step(self, step_input):
 
+        prev_step = [s for s in reversed((self.steps or [None]))][0]
+        
         print "----------- START STEP -----------------"
         
         # create step operations
         step = Step(step_input)
 
-        
-        
-        # ship operates in cuboid
+        # ship operates in the cuboid
         self.vessel.step(step, self.cuboid)
         
         # cleanup any hits
         self.cuboid.sweep_mines(step.hits)
 
+        # manual control
+        #step.swept_face = Cuboid(self.cuboid.render())
+        
         # flash freeze and stash the universe
         prev_cuboid = self.cuboid.clone()
 
@@ -102,7 +105,7 @@ class Simulation:
             print ex
             
         # collect all the good stuff
-        prev_step = [s for s in reversed((self.steps or [None]))][0]
+        
         event_data = (self.vessel.clone(),
                       prev_step,
                       step,
@@ -112,25 +115,30 @@ class Simulation:
         self.steps.append(step)
         
         return event_data
-        
+
+    print "----------- END STEP -----------------"
+
     
     def recompute_cuboid(self, step):
 
         cuboid_face = self.cuboid.render()
 
         # attach adjusted face and dims to step
+        
         step.grid = self.trim_grid(cuboid_face)
        
-        # todo: trim calls grow
+        #print "UNTRIMMED: ",  cuboid_face
+       
         
         if cuboid_face:  
-            self.initialize_cuboid(cuboid_face,
+            self.initialize_cuboid(self.cuboid.render(),
                                    self.vessel.decent_rate,
                                    self.vessel.decent_level)
-
-        print "----------- END STEP -----------------"
+            
+       
 
         
+    
     def trim_grid(self, face):
 
         ## this is here to enable breaking on a specific step during debugging
@@ -144,8 +152,6 @@ class Simulation:
         coords = mine_coords + [self.vessel.get_coordinates()]
 
         print "OBJECT COORDS: ", coords
-
-
 
         west_edge, east_edge, south_edge, north_edge = computer.smallest_rectangle(coords)
 
@@ -193,7 +199,7 @@ class Simulation:
         if step_inputs is None:
             self.script_input = open(self.steps_file, "r").read()
             self.step_inputs = self.script_input.split("\n")
-            self.steps_file_output = self.steps_file+ ".out"
+            self.steps_file_output = self.steps_file + ".out"
             os.remove(self.steps_file_output) if os.path.exists(self.steps_file_output) else None
   
         else:

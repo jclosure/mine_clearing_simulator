@@ -19,7 +19,16 @@ class Grid(Entity):
     # section: shrinking operations
     def valid(self, num):
         return num > 0
-  
+
+
+    def sweep_mines(self, hit_mines):
+        for mine in hit_mines:
+            print "removing hit mine from grid: ", mine
+            coords, char = mine
+            x,y,z = coords
+            self.matrix[x][y] = "."
+            
+    
     
     def shrink_west(self, num):
         if self.valid(num):
@@ -60,7 +69,7 @@ class Grid(Entity):
                 row = [map(lambda col: ".",
                            range(len(self.matrix[0])))]
                 self.matrix = self.matrix + row
-
+                
     def grow_face(self, face, xends, yends):
 
         ## this is here to enable breaking on a specific step during debugging
@@ -95,7 +104,7 @@ class Grid(Entity):
         
         print "grown face: \n" + grown_face
         return face
-        
+
     def render(self):
         builder = StringIO()
         for row in self.matrix:

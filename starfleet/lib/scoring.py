@@ -80,11 +80,13 @@ class Scoring:
 
             # print prev step's grid
             if prev_step:
-                builder.write(step.grid.render())
+                builder.write(prev_step.grid.render())
+            else:
+                builder.write(self.sim.script_input)
 
-                builder.write(self.eol)
-                builder.write(self.eol)
-
+            builder.write(self.eol)
+            builder.write(self.eol)
+                
             # print instructions
             builder.write(step.instructions)
 
