@@ -53,3 +53,7 @@ Grid = grid.Grid
 Scoring = scoring.Scoring
 Entity = entity.Entity
 
+# testbed
+import canary
+reload(canary)
+Canary = canary.Canary

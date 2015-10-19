@@ -81,7 +81,7 @@ class TestSimulator(BaseTest):
         vessel, step, nstep, ocuboid, ncuboid = sim.step("delta south")
         this(nstep.hits).should_not.be.empty
         
-
+        
     
         
 # autoexecute

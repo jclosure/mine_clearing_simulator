@@ -1,6 +1,8 @@
 
 import sys, inspect
-from lib import toolbox
+
+from itertools import *
+import six
 
 class Canary:
 
@@ -14,10 +16,13 @@ class Canary:
             print varname
 
     def find_method(self, name):
-        for key,val in self.__class__.__dict__:
+        
+        for key,val in six.iteritems(self.__class__.__dict__):
             if key == name:
-                return val
-    
+                return key,val
+
+
+# module level functions
 def is_mod_function(mod, func):
     return inspect.isfunction(func) and inspect.getmodule(func) == mod
 
@@ -26,5 +31,5 @@ def list_functions(mod):
             if is_mod_function(mod, func)]
 
 
-print 'functions in current module:\n', list_functions(sys.modules[__name__])
-print 'functions in inspect module:\n', list_functions(inspect)
+# print 'functions in current module:\n', list_functions(sys.modules[__name__])
+# print 'functions in inspect module:\n', list_functions(inspect)
