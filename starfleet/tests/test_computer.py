@@ -7,7 +7,7 @@ from lib import Cuboid
 from lib import Vessel
 from lib import computer
 from lib import toolbox
-
+from base_test import BaseTest
 
 # mockito: https://code.google.com/p/mockito-python/
 # py.test stdout: https://pytest.org/latest/capture.html
@@ -39,9 +39,9 @@ def manual():
     return tester
 
 
-class TestComputer:
+class TestComputer(BaseTest):
 
-    def setup_method(self, test_method):
+    def setUp(self):
         exemplar1 = """..N..
                        .....
                        W...E
@@ -51,19 +51,20 @@ class TestComputer:
         self.cub = Cuboid(exemplar1)
         self.ves = Vessel("My Test Ship")
 
-    def teardown_method(self, test_method):
+    def tearDown(self):
         # tear down self.attribute
         pass
-
+    
+    
     def test_chopping_rectangle_to_coordinates(self):
         cub = self.cub
         ves = self.ves
-
+        
         # get all mine coords
         mine_coords = [mine[0] for mine in cub.mines]
         # add the ship's coords
         coords = mine_coords + [ves.get_coordinates()]
-
+        
         # act
         west_edge, east_edge, south_edge, north_edge = computer.smallest_rectangle(coords)
 

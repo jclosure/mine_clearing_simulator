@@ -9,7 +9,7 @@ from entity import Entity
 class Cuboid(Entity):
 
     # trust me. this is sweet..
-    z_map = {c:(i+1)*-1 for i,c in enumerate([chr(c) for c in range(ord('a'), ord('z')+1)] + [chr(c) for c in range(ord('A'), ord('Z')+1)])}
+    z_map = {c: (i + 1) * -1 for i, c in enumerate([chr(c) for c in range(ord('a'), ord('z') + 1)] + [chr(c) for c in range(ord('A'), ord('Z') + 1)])}
         
     eol = "\n"
     empty_space = "."
@@ -21,8 +21,8 @@ class Cuboid(Entity):
         
         if self.validate(string_input):
             self.string_input = string_input
-            #build out cuboid
-            self.compute_characteristics()              
+            # build out cuboid
+            self.compute_characteristics()
             self.generate_cube_space()
             self.place_mines()
         
@@ -30,7 +30,7 @@ class Cuboid(Entity):
     def validate(self, string_input):
 
         # must have lines
-        kilometers = [line for line in string_input if len(line) > 0] 
+        kilometers = [line for line in string_input if len(line) > 0]
         if not kilometers:
             raise CuboidException("EDGE OF THE UNIVERSE ... YOU RAN OUT OF SPACETIME!")
         
@@ -39,39 +39,38 @@ class Cuboid(Entity):
         # all y lines must be same width
         return True
 
-    
-    # compute the state of the cuboid
-    def compute_characteristics(self):        
+    #  compute the state of the cuboid
+    def compute_characteristics(self):
 
         # get the set of mine characters
         self.mine_chars = list(re.findall(r'[a-zA-Z]', self.string_input))
-     
+
         # lookup chars
         self.mine_chars = map(lambda char:
                               self.char_resolver(char),
                               self.mine_chars)
 
         print "mine_chars: " + str(self.mine_chars)
-        #ipdb.set_trace()
+        # ipdb.set_trace()
 
         self.lines = self.string_input.strip().split(self.eol)
 
-        self.lines = [line for line in self.lines if len(line) > 0] 
+        self.lines = [line for line in self.lines if len(line) > 0]
         
         # todo: make use lines
         # compute height and width
         self.width = len(list(self.string_input.split()[0].strip()))
         self.height = len(self.string_input.split(self.eol))
 
-        #compute depth
+        # compute depth
         if not self.mine_chars:
             self.depth = 0
         else:
-            self.deepest_mine = reduce(lambda lowest,current: current
+            self.deepest_mine = reduce(lambda lowest, current: current
                                        if self.z_map[current] < self.z_map[lowest]
                                        else lowest, self.mine_chars)
             self.depth = self.z_map[self.deepest_mine]
-        
+
     # generate a cubic data structure of correct dimensions
     # note: z-axis is negatively oriented to allow tracking of planar decent
     def generate_cube_space(self):
@@ -83,14 +82,14 @@ class Cuboid(Entity):
     def place_mines(self):
         self.mines = []
         # reversing the lines to make y=0 at the bottom
-        for y,line in enumerate(reversed(self.lines)):
-            for x,char in enumerate(list(line.strip())):
+        for y, line in enumerate(reversed(self.lines)):
+            for x, char in enumerate(list(line.strip())):
                 if char in self.mine_chars:
                     z = self.z_map[char]
                     try:
                         # site the mine
                         self.cube_space[x][y][z] = char
-                        self.mines.append(((x,y,z), char))
+                        self.mines.append(((x, y, z), char))
                     except Exception as ex:
                         ipdb.set_trace()
                         raise ex
@@ -106,56 +105,54 @@ class Cuboid(Entity):
             if v == charv - self.decent_offset:
                 print "adjusting char: ", char, " to ", c
                 resolved = c
-        self.string_input = self.string_input.replace(char,resolved)
+        self.string_input = self.string_input.replace(char, resolved)
         return resolved
     
     def sweep_mines(self, hit_mines):
         for mine in hit_mines:
             print "removing hit mine: ", mine
             coords, char = mine
-            x,y,z = coords
+            x, y, z = coords
             self.cube_space[x][y][z] = "."
             self.mines = [m for m
                           in self.mines
-                      if not coords == m[0]]
+                          if not coords == m[0]]
 
     def get_central_coordinates(self):
         # find cartesian center and decrement because we're zero indexed
-        return (((self.width / 2)  + (self.width % 2)) - 1,
+        return (((self.width / 2) + (self.width % 2)) - 1,
                 ((self.height / 2) + (self.height % 2)) - 1,
-                (self.depth / 2) + 1) # depth is negative, so we add 1
-
-        
+                (self.depth / 2) + 1)  # depth is negative, so we add 1
+    
     def most_east_mine(self):
-        most_east_mine = reduce(lambda highest,current: current
+        most_east_mine = reduce(lambda highest, current: current
                                 if current[0][0] > highest[0][0]
                                 else highest, self.mines)
         return most_east_mine
 
     def most_west_mine(self):
-        most_west_mine = reduce(lambda lowest,current: current
+        most_west_mine = reduce(lambda lowest, current: current
                                 if current[0][0] < lowest[0][0]
                                 else lowest, self.mines)
         return most_west_mine
 
     def most_north_mine(self):
-        most_north_mine = reduce(lambda highest,current: current
+        most_north_mine = reduce(lambda highest, current: current
                                  if current[0][1] > highest[0][1]
                                  else highest, self.mines)
         return most_north_mine
 
     def most_south_mine(self):
-        most_south_mine = reduce(lambda lowest,current: current
+        most_south_mine = reduce(lambda lowest, current: current
                                  if current[0][1] < lowest[0][1]
                                  else lowest, self.mines)
         return most_south_mine
-
         
     def render(self):
         builder = StringIO()
         # note: we are decrementing height to accomodate for the index being one lowe
         # print "BEFORE: \n", self.string_input, "\n"
-        for y in range(self.height)[::-1]: 
+        for y in range(self.height)[::-1]:
             y_mines = [m for m in self.mines if m[0][1] == y]
             for x in xrange(self.width):
                 xy_mine = next((m for m in y_mines if m[0][0] == x), None)
@@ -167,14 +164,9 @@ class Cuboid(Entity):
         matrix = builder.getvalue().rstrip(self.eol)
         return matrix
         
-
-
-
-
-##### CUBOID EXCEPTIONS #####
-
+# #### CUBOID EXCEPTIONS #####
 class CuboidException(Exception):
-    def __init__(self, message, errors = [], data=[]):
+    def __init__(self, message, errors=[], data=[]):
         
         # Call the base class constructor with the parameters it needs
         super(CuboidException, self).__init__(message)

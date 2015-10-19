@@ -129,7 +129,6 @@ class Simulation:
         step.trimmed_face, step.grown_face = self.generate_faces(cuboid_face)
        
         print "UNTRIMMED: \n",  cuboid_face
-
         
         
         if cuboid_face:  
@@ -161,6 +160,8 @@ class Simulation:
         
         g = Grid(face)
         
+        
+
         western_offset = abs(0 - west_edge[1])
         eastern_offset =  abs(g.width - 1 - east_edge[1])
         northern_offset = abs(g.height - 1 - north_edge[1])
